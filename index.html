@@ -30,7 +30,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Grand Programme Optimisé</h1>
+        <h1>Le Programme Ultime (05h00)</h1>
         <div class="date-display" id="date-display">...</div>
         
         <div class="live-alert" id="live-alert">
@@ -50,83 +50,102 @@
         const methodesAnglais = isCycleA ? "Busuu, Dessins animés, IA" : "Shadowing, Scrable, Lecture";
         const methodesSecu = isCycleA ? "TryHackMe, OSINT" : "TryHackMe, Github";
 
+        // Nouveau programme parfait validé scientifiquement
         const baseSchedule = [
-            { start: "09:30", end: "11:15", name: "🧠 IA / Machine Learning", sub: "FOCUS MATIN (1h45)" },
-            { start: "11:15", end: "12:45", name: "🛡️ Sécurité Informatique", sub: "(1h30) - " + methodesSecu },
-            { start: "12:45", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "Repos (45 min)" },
-            { start: "13:30", end: "14:30", name: "🇬🇧 Anglais", sub: "(1h00) - " + methodesAnglais },
-            { start: "14:30", end: "15:15", name: "🚀 Force-N", sub: "(45 min) Plateforme" },
-            { start: "15:15", end: "16:00", name: "📊 Excel", sub: "(45 min) Pratique" },
-            { start: "16:00", end: "16:45", name: "🗣️ Éloquence", sub: "(45 min) Shadowing FR" },
-            { start: "16:45", end: "17:30", name: "📱 Autres", sub: "(45 min) Cisco & Autres apps" }
+            { start: "05:00", end: "06:45", name: "🧠 IA / Machine Learning", sub: "DEEP WORK (1h45) - Avec 2 mini-pauses" },
+            { start: "06:45", end: "07:45", name: "🇬🇧 Anglais", sub: "(1h00) - " + methodesAnglais },
+            { start: "07:45", end: "09:00", name: "⛔ Indisponible", sub: "Déplacement / Autre (1h15)" },
+            { start: "09:00", end: "10:30", name: "🛡️ Sécurité Informatique", sub: "(1h30) - " + methodesSecu },
+            { start: "10:30", end: "11:30", name: "📊 Excel", sub: "(1h00) Pratique" },
+            { start: "11:30", end: "12:00", name: "🏃‍♂️ Temps Libre / Marche", sub: "Décompression sans écran (30 min)" },
+            { start: "12:00", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "Vraie pause repas (1h30)" },
+            { start: "13:30", end: "14:30", name: "🚀 Force-N", sub: "(1h00) Travail Asynchrone" },
+            { start: "14:30", end: "15:30", name: "🗣️ Éloquence", sub: "(1h00) Shadowing FR" },
+            { start: "15:30", end: "16:30", name: "📱 Autres", sub: "(1h00) Cisco & Mentor" },
+            { start: "16:30", end: "17:30", name: "📝 Bilan & Lecture", sub: "(1h00) Fin de journée" }
         ];
 
         const specialDates = {
             "2026-07-24": [
-                { start: "09:30", end: "10:30", name: "🚀 Force-N : Test MBTI", sub: "Session de 1h" },
-                { start: "10:30", end: "11:45", name: "🧠 IA / Machine Learning", sub: "(1h15)" },
-                { start: "11:45", end: "13:00", name: "🛡️ Sécurité Informatique", sub: "(1h15) - " + methodesSecu },
-                { start: "13:00", end: "13:45", name: "🍽️ Pause", sub: "" },
-                { start: "13:45", end: "15:00", name: "🇬🇧 Anglais & Excel", sub: "Condensé (1h15)" },
+                { start: "05:00", end: "06:45", name: "🧠 IA / Machine Learning", sub: "" },
+                { start: "06:45", end: "07:45", name: "🇬🇧 Anglais", sub: methodesAnglais },
+                { start: "07:45", end: "09:00", name: "⛔ Indisponible", sub: "Déplacement" },
+                { start: "09:00", end: "10:30", name: "🚀 Force-N : Test MBTI", sub: "Trouve 1h de test" },
+                { start: "10:30", end: "12:00", name: "🛡️ Sécurité Informatique", sub: methodesSecu },
+                { start: "12:00", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "Vraie pause" },
+                { start: "13:30", end: "15:00", name: "📊 Excel & Autres", sub: "" },
                 { start: "15:00", end: "17:00", name: "🔴 LIVE FORCE-N", sub: "Coaching PPP n°1" },
                 { start: "17:00", end: "17:30", name: "🗣️ Éloquence", sub: "" }
             ],
             "2026-07-27": [
-                { start: "09:30", end: "11:15", name: "🧠 IA / Machine Learning", sub: "(1h45)" },
-                { start: "11:15", end: "12:45", name: "🛡️ Sécurité Informatique", sub: "(1h30)" },
-                { start: "12:45", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "" },
-                { start: "13:30", end: "14:30", name: "🇬🇧 Anglais", sub: methodesAnglais },
-                { start: "14:30", end: "15:00", name: "📊 Excel & Autres", sub: "" },
+                { start: "05:00", end: "06:45", name: "🧠 IA / Machine Learning", sub: "" },
+                { start: "06:45", end: "07:45", name: "🇬🇧 Anglais", sub: methodesAnglais },
+                { start: "07:45", end: "09:00", name: "⛔ Indisponible", sub: "Déplacement" },
+                { start: "09:00", end: "10:30", name: "🛡️ Sécurité Informatique", sub: methodesSecu },
+                { start: "10:30", end: "12:00", name: "📊 Excel & Autres", sub: "" },
+                { start: "12:00", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "" },
+                { start: "13:30", end: "15:00", name: "🗣️ Éloquence & Cisco", sub: "" },
                 { start: "15:00", end: "17:00", name: "🔴 LIVE FORCE-N", sub: "Coaching PPP n°2" },
-                { start: "17:00", end: "17:30", name: "🗣️ Éloquence", sub: "" }
+                { start: "17:00", end: "17:30", name: "📝 Bilan", sub: "" }
             ],
             "2026-07-28": [
-                { start: "09:30", end: "11:15", name: "🧠 IA / Machine Learning", sub: "(1h45)" },
-                { start: "11:15", end: "12:45", name: "🛡️ Sécurité Informatique", sub: "(1h30)" },
-                { start: "12:45", end: "13:30", name: "🍽️ Pause", sub: "" },
-                { start: "13:30", end: "14:00", name: "🇬🇧 Anglais", sub: "Rapide" },
+                { start: "05:00", end: "06:45", name: "🧠 IA / Machine Learning", sub: "" },
+                { start: "06:45", end: "07:45", name: "🇬🇧 Anglais", sub: methodesAnglais },
+                { start: "07:45", end: "09:00", name: "⛔ Indisponible", sub: "Déplacement" },
+                { start: "09:00", end: "10:30", name: "🛡️ Sécurité Informatique", sub: methodesSecu },
+                { start: "10:30", end: "12:00", name: "📊 Excel & Autres", sub: "" },
+                { start: "12:00", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "" },
+                { start: "13:30", end: "14:00", name: "🗣️ Éloquence", sub: "Rapide" },
                 { start: "14:00", end: "16:00", name: "🔴 LIVE FORCE-N", sub: "Entrepreneuriat" },
-                { start: "16:00", end: "17:00", name: "📊 Excel & Autres", sub: "" },
-                { start: "17:00", end: "17:30", name: "🗣️ Éloquence", sub: "" }
+                { start: "16:00", end: "17:30", name: "📱 Autres & Cisco", sub: "" }
             ],
             "2026-07-29": [
-                { start: "09:30", end: "10:00", name: "🧠 IA", sub: "Rapide" },
+                { start: "05:00", end: "06:45", name: "🧠 IA / Machine Learning", sub: "" },
+                { start: "06:45", end: "07:45", name: "🇬🇧 Anglais", sub: methodesAnglais },
+                { start: "07:45", end: "09:00", name: "⛔ Indisponible", sub: "Déplacement" },
+                { start: "09:00", end: "10:00", name: "🛡️ Sécurité Informatique", sub: methodesSecu },
                 { start: "10:00", end: "12:00", name: "🔴 LIVE FORCE-N", sub: "Employabilité" },
-                { start: "12:00", end: "13:00", name: "🛡️ Sécurité Informatique", sub: "(1h00)" },
-                { start: "13:00", end: "13:45", name: "🍽️ Pause", sub: "" },
-                { start: "13:45", end: "15:00", name: "🇬🇧 Anglais & Excel", sub: "" },
+                { start: "12:00", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "" },
+                { start: "13:30", end: "15:00", name: "📊 Excel & Éloquence", sub: "" },
                 { start: "15:00", end: "17:00", name: "🔴 LIVE FORCE-N", sub: "Coaching PPP n°3" },
-                { start: "17:00", end: "17:30", name: "🗣️ Éloquence", sub: "" }
+                { start: "17:00", end: "17:30", name: "📱 Cisco", sub: "" }
             ],
             "2026-07-30": [
-                { start: "09:30", end: "11:15", name: "🧠 IA / Machine Learning", sub: "(1h45)" },
-                { start: "11:15", end: "12:45", name: "🛡️ Sécurité Informatique", sub: "(1h30)" },
-                { start: "12:45", end: "13:30", name: "🍽️ Pause", sub: "" },
-                { start: "13:30", end: "14:30", name: "🇬🇧 Anglais", sub: methodesAnglais },
-                { start: "14:30", end: "15:00", name: "📊 Excel", sub: "" },
+                { start: "05:00", end: "06:45", name: "🧠 IA / Machine Learning", sub: "" },
+                { start: "06:45", end: "07:45", name: "🇬🇧 Anglais", sub: methodesAnglais },
+                { start: "07:45", end: "09:00", name: "⛔ Indisponible", sub: "Déplacement" },
+                { start: "09:00", end: "10:30", name: "🛡️ Sécurité Informatique", sub: methodesSecu },
+                { start: "10:30", end: "12:00", name: "📊 Excel & Autres", sub: "" },
+                { start: "12:00", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "" },
+                { start: "13:30", end: "15:00", name: "🗣️ Éloquence & Cisco", sub: "" },
                 { start: "15:00", end: "17:00", name: "🔴 LIVE FORCE-N", sub: "Explication QCM" },
-                { start: "17:00", end: "17:30", name: "🗣️ Éloquence", sub: "" }
+                { start: "17:00", end: "17:30", name: "📝 Bilan", sub: "" }
             ],
             "2026-08-10": [
-                { start: "09:30", end: "10:00", name: "🧠 IA", sub: "" },
+                { start: "05:00", end: "06:45", name: "🧠 IA / Machine Learning", sub: "" },
+                { start: "06:45", end: "07:45", name: "🇬🇧 Anglais", sub: methodesAnglais },
+                { start: "07:45", end: "09:00", name: "⛔ Indisponible", sub: "Déplacement" },
+                { start: "09:00", end: "10:00", name: "🗣️ Éloquence", sub: "" },
                 { start: "10:00", end: "10:45", name: "🔴 LIVE FORCE-N", sub: "Lancement WEB 3" },
                 { start: "11:00", end: "11:45", name: "🔴 LIVE FORCE-N", sub: "Lancement Drone" },
                 { start: "12:00", end: "12:45", name: "🔴 LIVE FORCE-N", sub: "Lancement Cybersécurité" },
-                { start: "12:45", end: "13:30", name: "🍽️ Pause", sub: "" },
-                { start: "13:30", end: "14:30", name: "🇬🇧 Anglais", sub: methodesAnglais },
-                { start: "14:30", end: "15:30", name: "🗣️ Éloquence", sub: "" },
-                { start: "15:30", end: "16:30", name: "📊 Excel", sub: "" },
-                { start: "16:30", end: "17:30", name: "🛡️ Sécurité", sub: "Pratique" }
-            ],
-            "2026-08-11": [
-                { start: "09:30", end: "10:00", name: "🛡️ Sécurité", sub: "Lecture rapide" },
-                { start: "10:00", end: "10:45", name: "🔴 LIVE FORCE-N", sub: "Lancement IOT" },
-                { start: "10:45", end: "12:30", name: "🇬🇧 Anglais & Éloquence", sub: "" },
-                { start: "12:30", end: "13:00", name: "🍽️ Pause", sub: "" },
-                { start: "13:00", end: "13:45", name: "🔴 LIVE FORCE-N", sub: "Lancement IA Pour Tous" },
-                { start: "13:45", end: "15:30", name: "🧠 IA Pratique", sub: "(1h45)" },
+                { start: "12:45", end: "14:00", name: "🍽️ Pause Déjeuner", sub: "" },
+                { start: "14:00", end: "15:30", name: "🛡️ Sécurité Informatique", sub: methodesSecu },
                 { start: "15:30", end: "16:30", name: "📊 Excel", sub: "" },
                 { start: "16:30", end: "17:30", name: "📱 Autres", sub: "" }
+            ],
+            "2026-08-11": [
+                { start: "05:00", end: "06:45", name: "🧠 IA / Machine Learning", sub: "" },
+                { start: "06:45", end: "07:45", name: "🇬🇧 Anglais", sub: methodesAnglais },
+                { start: "07:45", end: "09:00", name: "⛔ Indisponible", sub: "Déplacement" },
+                { start: "09:00", end: "10:00", name: "🛡️ Sécurité Informatique", sub: methodesSecu },
+                { start: "10:00", end: "10:45", name: "🔴 LIVE FORCE-N", sub: "Lancement IOT" },
+                { start: "10:45", end: "12:00", name: "🗣️ Éloquence", sub: "" },
+                { start: "12:00", end: "13:00", name: "🍽️ Pause Déjeuner", sub: "" },
+                { start: "13:00", end: "13:45", name: "🔴 LIVE FORCE-N", sub: "Lancement IA Pour Tous" },
+                { start: "13:45", end: "15:00", name: "🧠 IA Pratique", sub: "" },
+                { start: "15:00", end: "16:00", name: "📊 Excel", sub: "" },
+                { start: "16:00", end: "17:30", name: "📱 Autres", sub: "" }
             ]
         };
 
