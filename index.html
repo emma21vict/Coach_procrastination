@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Programme - Anti-Procrastination</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+        
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 20px; font-family: 'Outfit', sans-serif; background: radial-gradient(circle at top left, #0f2027, #203a43, #2c5364); color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 550px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border-radius: 24px; padding: 30px 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.1); }
+        h1 { text-align: center; font-size: 1.8rem; margin: 0 0 5px 0; color: #00f2fe; }
+        .date-display { text-align: center; color: #a0aab2; font-size: 1.1rem; margin-bottom: 20px; font-weight: 600; text-transform: capitalize;}
+        .time-display { font-size: 4rem; font-weight: 800; text-align: center; margin: 10px 0 20px; color: #fff; text-shadow: 0 0 20px rgba(79, 172, 254, 0.6); font-variant-numeric: tabular-nums; }
+        .live-alert { display: none; background: rgba(233, 69, 96, 0.2); border-left: 4px solid #e94560; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem; color: #ffd1d9; font-weight: 600;}
+        .schedule { list-style: none; padding: 0; margin: 0; }
+        .block { padding: 14px; margin: 10px 0; background: rgba(255, 255, 255, 0.03); border-radius: 12px; transition: all 0.3s; display: flex; flex-direction: column; border: 1px solid transparent; }
+        .block.active { background: rgba(79, 172, 254, 0.15); border: 1px solid rgba(79, 172, 254, 0.5); transform: scale(1.03); box-shadow: 0 5px 15px rgba(79, 172, 254, 0.2); }
+        .block.past { opacity: 0.4; }
+        .block-header { display: flex; justify-content: space-between; align-items: center; }
+        .block-name { font-weight: 600; font-size: 1.1rem; }
+        .block-time { font-size: 0.9rem; color: #00f2fe; font-weight: 800; }
+        .block-methods { font-size: 0.85rem; color: #a0aab2; margin-top: 5px; }
+        .active .block-name { color: #fff; }
+        .btn { display: block; width: 100%; padding: 16px; background: linear-gradient(90deg, #4facfe, #00f2fe); color: #0f2027; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 30px; transition: 0.3s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 242, 254, 0.6); }
+        .btn.active { background: #e94560; color: white; box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Grand Programme Automatique</h1>
+        <div class="date-display" id="date-display">...</div>
+        
+        <div class="live-alert" id="live-alert">
+            🚨 <strong>Attention :</strong> L'emploi du temps s'est adapté car tu as une session Force-N aujourd'hui !
+        </div>
+
+        <div class="time-display" id="clock">00:00:00</div>
+        <ul class="schedule" id="schedule-list"></ul>
+        <button class="btn" id="alarm-btn" onclick="toggleAlarms()">Activer les Alarmes Sonores</button>
+    </div>
+
+    <script>
+        // --- LOGIQUE DE ROTATION (3 méthodes par jour) ---
+        const now = new Date();
+        const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+        const isCycleA = dayOfYear % 2 === 0;
+        
+        const methodesAnglais = isCycleA ? "Méthodes du jour : Busuu, Dessins animés, IA" : "Méthodes du jour : Shadowing, Scrable, Lecture";
+        const methodesSecu = isCycleA ? "Méthodes du jour : TryHackMe, OSINT" : "Méthodes du jour : TryHackMe, Github";
+
+        // --- PROGRAMME CLASSIQUE (Tous les jours sauf Live) ---
+        const baseSchedule = [
+            { start: "09:30", end: "10:30", name: "🧠 IA / Machine Learning", sub: "Théorie et pratique" },
+            { start: "10:30", end: "11:30", name: "🛡️ Sécurité Informatique", sub: methodesSecu },
+            { start: "11:30", end: "12:30", name: "📊 Excel", sub: "Pratique" },
+            { start: "12:30", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "Repos complet" },
+            { start: "13:30", end: "14:30", name: "🚀 Force-N", sub: "Travail plateforme ou mentor" },
+            { start: "14:30", end: "15:30", name: "🇬🇧 Anglais", sub: methodesAnglais },
+            { start: "15:30", end: "16:30", name: "🗣️ Éloquence", sub: "Shadowing Français" },
+            { start: "16:30", end: "17:30", name: "📱 Autres applications", sub: "Cisco etc." }
+        ];
+
+        // --- PROGRAMMES SPÉCIFIQUES POUR LES JOURS DE LIVE (Jusqu'en Août) ---
+        const specialDates = {
+            "2026-07-24": [
+                { start: "09:30", end: "10:30", name: "🚀 Force-N : Test MBTI", sub: "Choisis une session" },
+                { start: "10:30", end: "11:30", name: "🧠 IA / Machine Learning", sub: "" },
+                { start: "11:30", end: "12:30", name: "🛡️ Sécurité Informatique", sub: methodesSecu },
+                { start: "12:30", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "" },
+                { start: "13:30", end: "14:30", name: "📊 Excel", sub: "" },
+                { start: "14:30", end: "15:00", name: "🇬🇧 Anglais & Éloquence", sub: "Révision rapide" },
+                { start: "15:00", end: "17:00", name: "🔴 LIVE FORCE-N", sub: "Coaching PPP n°1" },
+                { start: "17:00", end: "17:30", name: "📱 Autres", sub: "Cisco" }
+            ],
+            "2026-07-27": [
+                { start: "09:30", end: "10:30", name: "🧠 IA / Machine Learning", sub: "" },
+                { start: "10:30", end: "11:30", name: "🛡️ Sécurité Informatique", sub: methodesSecu },
+                { start: "11:30", end: "12:30", name: "📊 Excel", sub: "" },
+                { start: "12:30", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "" },
+                { start: "13:30", end: "14:30", name: "🇬🇧 Anglais", sub: methodesAnglais },
+                { start: "14:30", end: "15:00", name: "🗣️ Éloquence", sub: "" },
+                { start: "15:00", end: "17:00", name: "🔴 LIVE FORCE-N", sub: "Coaching PPP n°2" },
+                { start: "17:00", end: "17:30", name: "📱 Autres", sub: "Cisco" }
+            ],
+            "2026-07-28": [
+                { start: "09:30", end: "10:30", name: "🧠 IA / Machine Learning", sub: "" },
+                { start: "10:30", end: "11:30", name: "🛡️ Sécurité Informatique", sub: methodesSecu },
+                { start: "11:30", end: "12:30", name: "📊 Excel", sub: "" },
+                { start: "12:30", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "" },
+                { start: "13:30", end: "14:00", name: "🇬🇧 Anglais", sub: methodesAnglais },
+                { start: "14:00", end: "16:00", name: "🔴 LIVE FORCE-N", sub: "Accompagnement entrepreneuriat" },
+                { start: "16:00", end: "17:00", name: "🗣️ Éloquence", sub: "" },
+                { start: "17:00", end: "17:30", name: "📱 Autres", sub: "Cisco" }
+            ],
+            "2026-07-29": [
+                { start: "09:30", end: "10:00", name: "🧠 IA (Rapide)", sub: "" },
+                { start: "10:00", end: "12:00", name: "🔴 LIVE FORCE-N", sub: "Accompagnement employabilité" },
+                { start: "12:00", end: "12:30", name: "🛡️ Sécurité", sub: "TryHackMe" },
+                { start: "12:30", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "" },
+                { start: "13:30", end: "14:30", name: "🇬🇧 Anglais & Éloquence", sub: "Mix" },
+                { start: "14:30", end: "15:00", name: "📊 Excel", sub: "" },
+                { start: "15:00", end: "17:00", name: "🔴 LIVE FORCE-N", sub: "Coaching PPP n°3" },
+                { start: "17:00", end: "17:30", name: "📱 Autres", sub: "" }
+            ],
+            "2026-07-30": [
+                { start: "09:30", end: "10:30", name: "🧠 IA / Machine Learning", sub: "" },
+                { start: "10:30", end: "11:30", name: "🛡️ Sécurité Informatique", sub: methodesSecu },
+                { start: "11:30", end: "12:30", name: "📊 Excel", sub: "" },
+                { start: "12:30", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "" },
+                { start: "13:30", end: "14:30", name: "🇬🇧 Anglais", sub: methodesAnglais },
+                { start: "14:30", end: "15:00", name: "🗣️ Éloquence", sub: "" },
+                { start: "15:00", end: "17:00", name: "🔴 LIVE FORCE-N", sub: "Explication des tests QCM" },
+                { start: "17:00", end: "17:30", name: "📱 Autres", sub: "Cisco" }
+            ],
+            "2026-08-10": [
+                { start: "09:30", end: "10:00", name: "🧠 IA", sub: "" },
+                { start: "10:00", end: "10:45", name: "🔴 LIVE FORCE-N", sub: "Lancement WEB 3" },
+                { start: "11:00", end: "11:45", name: "🔴 LIVE FORCE-N", sub: "Lancement Drone" },
+                { start: "12:00", end: "12:45", name: "🔴 LIVE FORCE-N", sub: "Lancement Cybersécurité" },
+                { start: "12:45", end: "13:30", name: "🍽️ Pause Déjeuner", sub: "" },
+                { start: "13:30", end: "14:30", name: "🇬🇧 Anglais", sub: methodesAnglais },
+                { start: "14:30", end: "15:30", name: "🗣️ Éloquence", sub: "" },
+                { start: "15:30", end: "16:30", name: "📊 Excel", sub: "" },
+                { start: "16:30", end: "17:30", name: "🛡️ Sécurité", sub: methodesSecu }
+            ],
+            "2026-08-11": [
+                { start: "09:30", end: "10:00", name: "🛡️ Sécurité", sub: "Lecture rapide" },
+                { start: "10:00", end: "10:45", name: "🔴 LIVE FORCE-N", sub: "Lancement IOT" },
+                { start: "10:45", end: "12:30", name: "🇬🇧 Anglais & Éloquence", sub: "" },
+                { start: "12:30", end: "13:00", name: "🍽️ Pause", sub: "" },
+                { start: "13:00", end: "13:45", name: "🔴 LIVE FORCE-N", sub: "Lancement IA Pour Tous" },
+                { start: "13:45", end: "15:00", name: "🧠 IA Pratique", sub: "" },
+                { start: "15:00", end: "16:00", name: "📊 Excel", sub: "" },
+                { start: "16:00", end: "17:30", name: "📱 Autres apps", sub: "" }
+            ]
+        };
+
+        // --- AFFICHAGE ET MOTEUR ---
+        const todayStr = now.toISOString().split('T')[0];
+        const currentSchedule = specialDates[todayStr] || baseSchedule;
+        
+        document.getElementById('date-display').textContent = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+        
+        if(specialDates[todayStr]) {
+            document.getElementById('live-alert').style.display = 'block';
+        }
+
+        const clockEl = document.getElementById('clock');
+        const listEl = document.getElementById('schedule-list');
+        const btnEl = document.getElementById('alarm-btn');
+        let alarmsEnabled = false;
+        let lastActiveIndex = -1;
+
+        function renderSchedule() {
+            listEl.innerHTML = '';
+            currentSchedule.forEach((block, index) => {
+                const li = document.createElement('li');
+                li.className = 'block';
+                li.id = 'block-' + index;
+                li.innerHTML = `
+                    <div class="block-header">
+                        <span class="block-name">${block.name}</span>
+                        <span class="block-time">${block.start} - ${block.end}</span>
+                    </div>
+                    ${block.sub ? '<div class="block-methods">' + block.sub + '</div>' : ''}
+                `;
+                listEl.appendChild(li);
+            });
+        }
+
+        function toggleAlarms() {
+            alarmsEnabled = !alarmsEnabled;
+            if (alarmsEnabled) {
+                btnEl.textContent = "🔊 Système Actif (Désactiver)";
+                btnEl.classList.add('active');
+                playBeep(400, 0.1); 
+            } else {
+                btnEl.textContent = "Activer les Alarmes Sonores";
+                btnEl.classList.remove('active');
+            }
+        }
+
+        function playBeep(freq = 800, duration = 1) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                gain.gain.setValueAtTime(1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function updateTime() {
+            const tempNow = new Date();
+            const hh = String(tempNow.getHours()).padStart(2, '0');
+            const mm = String(tempNow.getMinutes()).padStart(2, '0');
+            const ss = String(tempNow.getSeconds()).padStart(2, '0');
+            const currentTimeStr = `${hh}:${mm}`;
+            
+            clockEl.textContent = `${hh}:${mm}:${ss}`;
+
+            let currentActiveIndex = -1;
+
+            currentSchedule.forEach((block, index) => {
+                const el = document.getElementById('block-' + index);
+                if (currentTimeStr >= block.start && currentTimeStr < block.end) {
+                    el.className = 'block active';
+                    currentActiveIndex = index;
+                } else if (currentTimeStr >= block.end) {
+                    el.className = 'block past';
+                } else {
+                    el.className = 'block';
+                }
+            });
+
+            if (currentActiveIndex !== -1 && currentActiveIndex !== lastActiveIndex && lastActiveIndex !== -1) {
+                if (alarmsEnabled) {
+                    playBeep(880, 0.3);
+                    setTimeout(() => playBeep(1200, 0.5), 400);
+                }
+            }
+            lastActiveIndex = currentActiveIndex;
+        }
+
+        renderSchedule();
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>
