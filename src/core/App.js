@@ -29,7 +29,8 @@ export class App {
             learningGraph: null,
             reflections: null,
             monthlyReport: null,
-            allJournals: {}
+            allJournals: {},
+            fullProgram: []
         };
         this.router = new Router('app-root', this);
     }
@@ -73,6 +74,7 @@ export class App {
         this.state.reflections = await this.reflectionEngine.analyzeJournalTrends();
         this.state.monthlyReport = await this.analyticsEngine.generateMonthlyReport(dToday.getFullYear(), dToday.getMonth());
         this.state.allJournals = await this.storage.loadData('daily_journals') || {};
+        this.state.fullProgram = await this.scheduler.getFullProgram();
     }
     
     setupNavigation() {
@@ -129,6 +131,14 @@ export class App {
         const localDate = new Date().toLocaleDateString('fr-CA');
         await this.studyRecordEngine.saveDailyJournal(localDate, data);
         await this.refreshUserStats();
+    }
+    
+    async saveProgram(programData) {
+        await this.scheduler.saveFullProgram(programData);
+        await this.refreshUserStats();
+        const localDate = new Date().toLocaleDateString('fr-CA');
+        this.state.dailyPlan = await this.scheduler.generateDailyPlan(localDate);
+        this.renderView('program');
     }
     
     async showBilan() {

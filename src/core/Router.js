@@ -4,6 +4,7 @@ import { FocusView } from '../ui/FocusView.js';
 import { BilanView } from '../ui/BilanView.js';
 import { JournalView } from '../ui/JournalView.js';
 import { PortfolioView } from '../ui/PortfolioView.js';
+import { ProgramView } from '../ui/ProgramView.js';
 
 export class Router {
     constructor(containerId, app) {
@@ -13,7 +14,8 @@ export class Router {
             focus: new FocusView(containerId, app),
             bilan: new BilanView(containerId, app),
             journal: new JournalView(containerId, app),
-            portfolio: new PortfolioView(containerId, app)
+            portfolio: new PortfolioView(containerId, app),
+            program: new ProgramView(containerId, app)
         };
     }
 
@@ -27,7 +29,8 @@ export class Router {
             }
             if (viewName === 'bilan') data = state.dailyStats;
             if (viewName === 'journal') data = state.currentJournal;
-            if (viewName === 'portfolio') data = state.fullHistory;
+            if (viewName === 'portfolio') data = state;
+            if (viewName === 'program') data = state.fullProgram;
             
             view.render(data);
         } else {
