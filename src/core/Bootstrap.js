@@ -2,7 +2,7 @@ import { LocalStorageProvider } from '../services/LocalStorageProvider.js';
 import { SchedulerEngine } from '../engines/SchedulerEngine.js';
 import { XPEngine } from '../engines/XPEngine.js';
 import { StudyRecordEngine } from '../engines/StudyRecordEngine.js';
-import { App } from './App.js';
+import { App } from './App.js?v=3';
 import { AppLogger } from '../utils/AppLogger.js';
 
 export class Bootstrap {

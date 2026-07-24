@@ -1,6 +1,6 @@
 import { Router } from './Router.js';
 import { AppLogger } from '../utils/AppLogger.js';
-import { AnalyticsEngine } from '../engines/AnalyticsEngine.js';
+import { AnalyticsEngine } from '../engines/AnalyticsEngine.js?v=3';
 import { LearningGraphEngine } from '../engines/LearningGraphEngine.js';
 import { GoalEngine } from '../engines/GoalEngine.js';
 import { ReflectionEngine } from '../engines/ReflectionEngine.js';
