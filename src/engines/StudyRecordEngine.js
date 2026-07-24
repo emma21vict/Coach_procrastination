@@ -43,6 +43,24 @@ export class StudyRecordEngine {
         return { record, user };
     }
     
+    async uncompleteSession(sessionId, dateStr) {
+        let history = await this.storage.loadData('study_history') || [];
+        const recordIndex = history.findIndex(r => r.sessionId === sessionId && r.date === dateStr);
+        
+        if (recordIndex !== -1) {
+            const record = history[recordIndex];
+            history.splice(recordIndex, 1);
+            await this.storage.saveData('study_history', history);
+            
+            let user = await this.storage.loadData('user_profile');
+            if (user && record.xpEarned) {
+                user.xpTotal = Math.max(0, user.xpTotal - record.xpEarned);
+                await this.storage.saveData('user_profile', user);
+            }
+            AppLogger.info(`StudyRecordEngine: Session annulée (${sessionId}), XP retiré.`);
+        }
+    }
+    
     async getDailyStats(dateStr) {
         const history = await this.storage.loadData('study_history') || [];
         const dailyRecords = history.filter(r => r.date === dateStr);

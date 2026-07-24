@@ -106,9 +106,15 @@ export class App {
     
     async markSessionCompleted(sessionId, metrics = { status: 'completed' }) {
         const session = this.state.dailyPlan.sessions.find(s => s.id === sessionId);
-        if (session && !session.completed) {
-            session.completed = true;
-            await this.studyRecordEngine.completeSession(session, metrics);
+        if (session) {
+            if (!session.completed) {
+                session.completed = true;
+                await this.studyRecordEngine.completeSession(session, metrics);
+            } else {
+                session.completed = false;
+                const localDate = new Date().toLocaleDateString('fr-CA');
+                await this.studyRecordEngine.uncompleteSession(sessionId, localDate);
+            }
             await this.refreshUserStats();
             this.renderView(this.state.currentView);
         }
@@ -116,16 +122,22 @@ export class App {
     
     async markHabitCompleted(habitId) {
         const habit = this.state.dailyPlan.habits.find(h => h.id === habitId);
-        if (habit && !habit.completed) {
-            habit.completed = true;
-            const pseudoSession = {
-                id: habit.id,
-                title: habit.title,
-                skillId: habit.skillId,
-                priority: "Normale",
-                expectedDuration: habit.minTime
-            };
-            await this.studyRecordEngine.completeSession(pseudoSession, { status: 'completed', quality: 4 });
+        if (habit) {
+            if (!habit.completed) {
+                habit.completed = true;
+                const pseudoSession = {
+                    id: habit.id,
+                    title: habit.title,
+                    skillId: habit.skillId,
+                    priority: "Normale",
+                    expectedDuration: habit.minTime
+                };
+                await this.studyRecordEngine.completeSession(pseudoSession, { status: 'completed', quality: 4 });
+            } else {
+                habit.completed = false;
+                const localDate = new Date().toLocaleDateString('fr-CA');
+                await this.studyRecordEngine.uncompleteSession(habitId, localDate);
+            }
             await this.refreshUserStats();
             this.renderView(this.state.currentView);
         }
