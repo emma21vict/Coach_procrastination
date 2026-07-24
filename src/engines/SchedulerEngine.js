@@ -10,8 +10,8 @@ export class SchedulerEngine {
     async getFullProgram() {
         let program = await this.storage.loadData('bootcamp_program');
         
-        // MIGRATION : si l'ancien programme factice est détecté, on l'écrase
-        if (program && program.length > 0 && program[0]?.days?.[0]?.sessions?.[0]?.title === "TryHackMe - Module S1J1") {
+        // MIGRATION : On force le programme de 4 semaines s'il n'est pas complet
+        if (program && (!Array.isArray(program) || program.length !== 4)) {
             program = null;
         }
         
