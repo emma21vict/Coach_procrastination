@@ -36,6 +36,15 @@ export class SchedulerEngine {
             new Habit("hab_3", "Journal", "reflection", "Critique", 5, "Soir", 7)
         ];
         
+        const skillNames = {
+            'english_speaking': 'Anglais',
+            'reading': 'Lecture / Culture',
+            'reflection': 'Productivité / Mindset',
+            'cyber_linux': 'Linux',
+            'machine_learning': 'Machine Learning'
+        };
+        mockHabits.forEach(h => h.skillLabel = skillNames[h.skillId] || h.skillId);
+        
         const program = await this.getFullProgram();
         
         let todaySessions = program[0].days[0].sessions;
@@ -50,14 +59,36 @@ export class SchedulerEngine {
             }
         }
         
-        const sessionsForToday = todaySessions.map((s, idx) => ({
-            id: `sess_${dateStr}_${idx}`,
-            title: s.title,
-            skillId: s.skillId,
-            expectedDuration: s.expectedDuration,
-            priority: s.priority || "Normale",
-            resourceLink: s.resourceLink
-        }));
+        let currentHour = 9;
+        let currentMinute = 30;
+
+        const sessionsForToday = todaySessions.map((s, idx) => {
+            const startTimeStr = `${currentHour.toString().padStart(2, '0')}h${currentMinute.toString().padStart(2, '0')}`;
+            
+            // Calculer l'heure de la prochaine session (+ durée + 15m pause)
+            let totalMinutes = s.expectedDuration + 15;
+            currentMinute += totalMinutes;
+            while (currentMinute >= 60) {
+                currentHour += 1;
+                currentMinute -= 60;
+                
+                // Pause déjeuner si on dépasse midi (on reprend à 14h)
+                if (currentHour === 12) {
+                    currentHour = 14;
+                    currentMinute = 0;
+                }
+            }
+            
+            return {
+                id: `sess_${dateStr}_${idx}`,
+                title: s.title,
+                skillId: s.skillId,
+                expectedDuration: s.expectedDuration,
+                priority: s.priority || "Normale",
+                resourceLink: s.resourceLink,
+                startTime: startTimeStr
+            };
+        });
 
         AppLogger.info(`Scheduler: ${mockHabits.length} habitudes et ${sessionsForToday.length} sessions générées.`);
         return { habits: mockHabits, sessions: sessionsForToday };
