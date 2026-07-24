@@ -20,7 +20,16 @@
         <button data-view="journal">📖 Journal</button>
         <button data-view="portfolio">🏆 Portf</button>
     </nav>
-
+    <script>
+        window.addEventListener('error', function(e) {
+            const root = document.getElementById('app-root');
+            if(root) root.innerHTML = '<p style="color:red; padding:20px;">Erreur globale : ' + e.message + '<br>Fichier : ' + e.filename + '</p>';
+        });
+        window.addEventListener('unhandledrejection', function(e) {
+            const root = document.getElementById('app-root');
+            if(root) root.innerHTML = '<p style="color:red; padding:20px;">Promesse rejetée : ' + e.reason + '</p>';
+        });
+    </script>
     <script type="module">
         import { Bootstrap } from './src/core/Bootstrap.js';
         

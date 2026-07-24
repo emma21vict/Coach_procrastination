@@ -11,7 +11,7 @@ export class SchedulerEngine {
         let program = await this.storage.loadData('bootcamp_program');
         
         // MIGRATION : si l'ancien programme factice est détecté, on l'écrase
-        if (program && program.length > 0 && program[0].days[0].sessions.length > 0 && program[0].days[0].sessions[0].title === "TryHackMe - Module S1J1") {
+        if (program && program.length > 0 && program[0]?.days?.[0]?.sessions?.[0]?.title === "TryHackMe - Module S1J1") {
             program = null;
         }
         
