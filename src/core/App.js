@@ -37,13 +37,15 @@ export class App {
     
     async start() {
         AppLogger.info("Lancement de l'application (start)");
+        document.getElementById('app-root').innerHTML = '<p style="text-align:center;">Génération du planning... (Etape 1)</p>';
         document.getElementById('bottom-nav').style.display = 'flex';
         this.setupNavigation();
         
         const localDate = new Date().toLocaleDateString('fr-CA');
-        document.getElementById('app-root').innerHTML = '<p style="text-align:center;">Génération du planning...</p>';
         
         const plan = await this.scheduler.generateDailyPlan(localDate);
+        document.getElementById('app-root').innerHTML = '<p style="text-align:center;">Génération du planning... (Etape 2)</p>';
+        
         const history = await this.storage.loadData('study_history') || [];
         const completedIds = history.filter(r => r.date === localDate).map(r => r.sessionId);
         
@@ -51,8 +53,10 @@ export class App {
         plan.sessions.forEach(s => s.completed = completedIds.includes(s.id));
         
         this.state.dailyPlan = plan;
+        document.getElementById('app-root').innerHTML = '<p style="text-align:center;">Génération du planning... (Etape 3)</p>';
         await this.refreshUserStats();
         
+        document.getElementById('app-root').innerHTML = '<p style="text-align:center;">Génération du planning... (Etape 4)</p>';
         this.renderView('coach');
     }
     
