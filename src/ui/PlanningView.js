@@ -35,7 +35,7 @@ export class PlanningView {
                 const timeHtml = s.startTime ? `<span style="background: #2a5268; padding: 2px 6px; border-radius: 4px; color: white; font-size: 12px; margin-right: 10px;">${s.startTime}</span>` : '';
                 
                 html += `<li style="${style}; padding: 15px; margin-bottom: 12px;">
-                    <strong style="cursor: pointer;" class="task-checkbox" data-id="${s.id}">${checkIcon} ${timeHtml}${s.title}</strong><br>
+                    <strong style="cursor: pointer;" class="task-checkbox" data-id="${s.id}">${checkIcon} ${timeHtml}${s.title} <span style="color:#ff9800; font-size:12px;">(${s.skillLabel || ''})</span></strong><br>
                     <small style="color: #ccc;">⏱ ${s.expectedDuration} min | ⚡ Priorité: ${s.priority}</small>
                     ${!isCompleted ? resourceLink : ''}
                 </li>`;

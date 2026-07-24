@@ -12,6 +12,21 @@ export class ProgramView {
 
         let html = "<h2>📅 Programme Bootcamp (30 Jours)</h2>";
         
+        const skillNames = {
+            'english_speaking': 'Anglais',
+            'reading': 'Lecture',
+            'reflection': 'Bilan',
+            'cyber_linux': 'Linux',
+            'cyber_network': 'Réseau / Cisco',
+            'ia_pandas': 'Pandas',
+            'data_excel': 'Excel',
+            'dev_git': 'Git/GitHub',
+            'cyber_osint': 'OSINT',
+            'ia_ml': 'Machine Learning',
+            'ia_python': 'Python',
+            'cyber_tryhackme': 'Cybersécurité'
+        };
+        
         programData.forEach((weekObj, wIdx) => {
             html += `
                 <div style="background: #152b36; padding: 10px; border-radius: 5px; margin-bottom: 15px; border-left: 5px solid #00f2fe;">
@@ -27,10 +42,11 @@ export class ProgramView {
                         </div>
                 `;
                 dayObj.sessions.forEach((s, sIdx) => {
+                    const skillLabel = skillNames[s.skillId] || 'Général';
                     html += `
                         <div style="margin-left: 10px; margin-bottom: 10px; padding-left: 10px; border-left: 2px solid #2a5268;">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:14px;">${s.title} (${s.expectedDuration} min)</span>
+                                <span style="font-size:14px;">${s.title} <strong style="color:#ff9800; font-size:12px;">(${skillLabel})</strong> - ${s.expectedDuration} min</span>
                                 <button class="btn-edit-session" data-w="${wIdx}" data-d="${dIdx}" data-s="${sIdx}" style="background:transparent; border:none; color:#00f2fe; cursor:pointer;">✏️ Éditer</button>
                             </div>
                             ${s.resourceLink ? `<a href="${s.resourceLink}" target="_blank" style="font-size:12px; color:#88a7b7;">🔗 Lien</a>` : ''}

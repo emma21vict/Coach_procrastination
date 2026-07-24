@@ -39,8 +39,16 @@ export class SchedulerEngine {
         const skillNames = {
             'english_speaking': 'Anglais',
             'reading': 'Lecture / Culture',
-            'reflection': 'Productivité / Mindset',
+            'reflection': 'Bilan & Planification',
             'cyber_linux': 'Linux',
+            'cyber_network': 'Réseau / Cisco',
+            'ia_pandas': 'Data / Pandas',
+            'data_excel': 'Data / Excel',
+            'dev_git': 'Git / GitHub',
+            'cyber_osint': 'OSINT',
+            'ia_ml': 'Machine Learning',
+            'ia_python': 'Python',
+            'cyber_tryhackme': 'Cybersécurité',
             'machine_learning': 'Machine Learning'
         };
         mockHabits.forEach(h => h.skillLabel = skillNames[h.skillId] || h.skillId);
@@ -83,6 +91,7 @@ export class SchedulerEngine {
                 id: `sess_${dateStr}_${idx}`,
                 title: s.title,
                 skillId: s.skillId,
+                skillLabel: skillNames[s.skillId] || 'Général',
                 expectedDuration: s.expectedDuration,
                 priority: s.priority || "Normale",
                 resourceLink: s.resourceLink,
