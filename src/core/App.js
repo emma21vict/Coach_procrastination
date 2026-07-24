@@ -1,5 +1,6 @@
 import { Router } from './Router.js';
 import { AppLogger } from '../utils/AppLogger.js';
+import { AnalyticsEngine } from '../engines/AnalyticsEngine.js';
 
 export class App {
     constructor(storage, scheduler, xpEngine, studyRecordEngine) {
@@ -7,11 +8,16 @@ export class App {
         this.scheduler = scheduler;
         this.xpEngine = xpEngine;
         this.studyRecordEngine = studyRecordEngine;
+        this.analyticsEngine = new AnalyticsEngine(storage);
+        
         this.state = {
-            currentView: 'dashboard',
-            todaySessions: [],
+            currentView: 'coach',
+            dailyPlan: { habits: [], sessions: [] },
             dailyStats: null,
-            userProfile: null
+            userProfile: null,
+            currentJournal: null,
+            fullHistory: [],
+            analytics: null
         };
         this.router = new Router('app-root', this);
     }
@@ -24,27 +30,26 @@ export class App {
         const localDate = new Date().toLocaleDateString('fr-CA');
         document.getElementById('app-root').innerHTML = '<p style="text-align:center;">Génération du planning...</p>';
         
-        // Génération du plan
-        let sessions = await this.scheduler.generateDailyPlan(localDate);
-        
-        // Vérification de l'historique pour les tâches déjà accomplies
+        const plan = await this.scheduler.generateDailyPlan(localDate);
         const history = await this.storage.loadData('study_history') || [];
-        const completedSessionIds = history.map(r => r.sessionId);
+        const completedIds = history.filter(r => r.date === localDate).map(r => r.sessionId);
         
-        sessions.forEach(s => {
-            s.completed = completedSessionIds.includes(s.id);
-        });
+        plan.habits.forEach(h => h.completed = completedIds.includes(h.id));
+        plan.sessions.forEach(s => s.completed = completedIds.includes(s.id));
         
-        this.state.todaySessions = sessions;
+        this.state.dailyPlan = plan;
         await this.refreshUserStats();
         
-        this.renderView('dashboard');
+        this.renderView('coach');
     }
     
     async refreshUserStats() {
         const localDate = new Date().toLocaleDateString('fr-CA');
         this.state.dailyStats = await this.studyRecordEngine.getDailyStats(localDate);
-        this.state.userProfile = await this.storage.loadData('user_profile') || { xpTotal: 0, streak: 1 };
+        this.state.userProfile = await this.storage.loadData('user_profile') || { xpTotal: 0, streak: 1, lastActive: null };
+        this.state.currentJournal = await this.studyRecordEngine.getJournal(localDate);
+        this.state.fullHistory = await this.studyRecordEngine.getFullHistory();
+        this.state.analytics = await this.analyticsEngine.generateInsights(localDate);
     }
     
     setupNavigation() {
@@ -56,7 +61,11 @@ export class App {
         });
     }
     
-    renderView(viewName) {
+    async renderView(viewName) {
+        if (viewName === 'journal' || viewName === 'portfolio' || viewName === 'coach' || viewName === 'bilan') {
+            await this.refreshUserStats();
+        }
+        
         this.state.currentView = viewName;
         document.querySelectorAll('#bottom-nav button[data-view]').forEach(b => b.classList.remove('active'));
         
@@ -66,14 +75,37 @@ export class App {
         this.router.render(viewName, this.state);
     }
     
-    async markSessionCompleted(sessionId) {
-        const session = this.state.todaySessions.find(s => s.id === sessionId);
+    async markSessionCompleted(sessionId, metrics = { status: 'completed' }) {
+        const session = this.state.dailyPlan.sessions.find(s => s.id === sessionId);
         if (session && !session.completed) {
             session.completed = true;
-            await this.studyRecordEngine.completeSession(session);
+            await this.studyRecordEngine.completeSession(session, metrics);
             await this.refreshUserStats();
             this.renderView(this.state.currentView);
         }
+    }
+    
+    async markHabitCompleted(habitId) {
+        const habit = this.state.dailyPlan.habits.find(h => h.id === habitId);
+        if (habit && !habit.completed) {
+            habit.completed = true;
+            const pseudoSession = {
+                id: habit.id,
+                title: habit.title,
+                skillId: habit.skillId,
+                priority: "Normale",
+                expectedDuration: habit.minTime
+            };
+            await this.studyRecordEngine.completeSession(pseudoSession, { status: 'completed', quality: 4 });
+            await this.refreshUserStats();
+            this.renderView(this.state.currentView);
+        }
+    }
+    
+    async saveJournal(data) {
+        const localDate = new Date().toLocaleDateString('fr-CA');
+        await this.studyRecordEngine.saveDailyJournal(localDate, data);
+        await this.refreshUserStats();
     }
     
     async showBilan() {

@@ -2,14 +2,18 @@ import { DashboardView } from '../ui/DashboardView.js';
 import { PlanningView } from '../ui/PlanningView.js';
 import { FocusView } from '../ui/FocusView.js';
 import { BilanView } from '../ui/BilanView.js';
+import { JournalView } from '../ui/JournalView.js';
+import { PortfolioView } from '../ui/PortfolioView.js';
 
 export class Router {
     constructor(containerId, app) {
         this.views = {
-            dashboard: new DashboardView(containerId, app),
+            coach: new DashboardView(containerId, app),
             planning: new PlanningView(containerId, app),
             focus: new FocusView(containerId, app),
-            bilan: new BilanView(containerId, app)
+            bilan: new BilanView(containerId, app),
+            journal: new JournalView(containerId, app),
+            portfolio: new PortfolioView(containerId, app)
         };
     }
 
@@ -17,12 +21,13 @@ export class Router {
         const view = this.views[viewName];
         if (view) {
             let data = state;
-            if (viewName === 'planning') data = state.todaySessions;
+            if (viewName === 'planning') data = state.dailyPlan;
             if (viewName === 'focus') {
-                // Le mode Focus prend la première tâche NON terminée
-                data = state.todaySessions.find(s => !s.completed) || null;
+                data = state.dailyPlan.sessions.find(s => !s.completed) || null;
             }
             if (viewName === 'bilan') data = state.dailyStats;
+            if (viewName === 'journal') data = state.currentJournal;
+            if (viewName === 'portfolio') data = state.fullHistory;
             
             view.render(data);
         } else {

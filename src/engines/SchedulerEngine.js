@@ -1,4 +1,5 @@
 import { AppLogger } from '../utils/AppLogger.js';
+import { Habit } from '../models/Habit.js';
 
 export class SchedulerEngine {
     constructor(storageProvider) {
@@ -8,7 +9,13 @@ export class SchedulerEngine {
     async generateDailyPlan(dateStr) {
         AppLogger.info(`Scheduler: Génération du planning pour la date ${dateStr}`);
         
-        // MVP: Mock pour la V1 (avec des vraies ressources pour tester l'interactivité)
+        // MVP: Mock pour la V1.2 (Habits + Sessions)
+        const mockHabits = [
+            new Habit("hab_1", "Shadowing", "english_speaking", "Élevée", 15, "Matin", 7),
+            new Habit("hab_2", "Lecture", "reading", "Moyenne", 20, "Soir", 5),
+            new Habit("hab_3", "Journal", "reflection", "Critique", 5, "Soir", 7)
+        ];
+        
         const mockSessions = [
             {
                 id: "sess_1",
@@ -25,18 +32,10 @@ export class SchedulerEngine {
                 expectedDuration: 15,
                 priority: "Normale",
                 resourceLink: "https://www.busuu.com"
-            },
-            {
-                id: "sess_3",
-                title: "GitHub Skills",
-                skillId: "git_basics",
-                expectedDuration: 10,
-                priority: "Normale",
-                resourceLink: "https://skills.github.com"
             }
         ];
         
-        AppLogger.info(`Scheduler: ${mockSessions.length} sessions générées.`);
-        return mockSessions;
+        AppLogger.info(`Scheduler: ${mockHabits.length} habitudes et ${mockSessions.length} sessions générées.`);
+        return { habits: mockHabits, sessions: mockSessions };
     }
 }

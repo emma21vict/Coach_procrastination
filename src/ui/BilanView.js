@@ -1,7 +1,7 @@
 export class BilanView {
     constructor(containerId, app) {
         this.container = document.getElementById(containerId);
-        this.app = app; // Reference to app to handle state
+        this.app = app;
     }
     
     render(stats) {
@@ -10,20 +10,21 @@ export class BilanView {
         this.container.innerHTML = `
             <h2>🏆 Bilan de la Journée</h2>
             <div class="stats" style="text-align: center;">
-                <h3>Excellent travail !</h3>
-                <p>Tu as terminé <strong>${stats.completedTasksCount}</strong> tâches aujourd'hui.</p>
-                <div class="timer" style="font-size: 36px; margin: 10px 0;">+ ${stats.xpTotal} XP</div>
-                <p>Temps de concentration : <strong>${stats.focusTime} min</strong></p>
-                <p style="color: #00f2fe; margin-top: 20px;">Ta progression a été sauvegardée.</p>
+                <p style="font-size: 14px; color: #88a7b7;">Étape 1/2 - Le résumé automatique.</p>
                 
-                <button id="btn-close-day" style="width: 100%; margin-top: 15px; background: #2a5268; color: white;">Fermer la journée</button>
+                <h3>Résumé Chiffré</h3>
+                <p>✔ <strong>${stats.completedTasksCount}</strong> tâches/habitudes terminées.</p>
+                <div class="timer" style="font-size: 36px; margin: 10px 0;">+ ${stats.xpTotal} XP</div>
+                <p>Temps d'étude actif : <strong>${stats.focusTime} min</strong></p>
+                
+                <button id="btn-go-journal" style="width: 100%; margin-top: 25px; background: #00f2fe; color: #0f2027;">Étape 2 : Mon Journal ➡️</button>
             </div>
         `;
         
-        const closeBtn = document.getElementById('btn-close-day');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                this.app.renderView('dashboard');
+        const btnNext = document.getElementById('btn-go-journal');
+        if (btnNext) {
+            btnNext.addEventListener('click', () => {
+                this.app.renderView('journal');
             });
         }
     }
