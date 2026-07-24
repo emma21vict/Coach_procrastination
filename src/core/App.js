@@ -1,6 +1,5 @@
-import { DashboardView } from '../ui/DashboardView.js';
-import { PlanningView } from '../ui/PlanningView.js';
-import { FocusView } from '../ui/FocusView.js';
+import { Router } from './Router.js';
+import { AppLogger } from '../utils/AppLogger.js';
 
 export class App {
     constructor(storage, scheduler, xpEngine) {
@@ -11,41 +10,39 @@ export class App {
             currentView: 'dashboard',
             todaySessions: []
         };
-        
-        this.views = {
-            dashboard: new DashboardView('app-root'),
-            planning: new PlanningView('app-root'),
-            focus: new FocusView('app-root')
-        };
+        this.router = new Router('app-root');
     }
     
     async start() {
+        AppLogger.info("Lancement de l'application (start)");
         document.getElementById('bottom-nav').style.display = 'flex';
         this.setupNavigation();
         
-        // Generate plan for today
-        this.state.todaySessions = await this.scheduler.generateDailyPlan(new Date().toISOString());
+        // Normalize date to local time (ex: YYYY-MM-DD)
+        const localDate = new Date().toLocaleDateString('fr-CA');
+        
+        document.getElementById('app-root').innerHTML = '<p style="text-align:center;">Génération du planning...</p>';
+        this.state.todaySessions = await this.scheduler.generateDailyPlan(localDate);
         
         this.renderView('dashboard');
     }
     
     setupNavigation() {
-        document.getElementById('nav-dashboard').addEventListener('click', () => this.renderView('dashboard'));
-        document.getElementById('nav-planning').addEventListener('click', () => this.renderView('planning'));
-        document.getElementById('nav-focus').addEventListener('click', () => this.renderView('focus'));
+        document.querySelectorAll('#bottom-nav button[data-view]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const viewName = e.currentTarget.getAttribute('data-view');
+                this.renderView(viewName);
+            });
+        });
     }
     
     renderView(viewName) {
-        document.querySelectorAll('#bottom-nav button').forEach(b => b.classList.remove('active'));
-        document.getElementById(`nav-${viewName}`).classList.add('active');
+        this.state.currentView = viewName;
+        document.querySelectorAll('#bottom-nav button[data-view]').forEach(b => b.classList.remove('active'));
         
-        if (viewName === 'dashboard') {
-            this.views.dashboard.render(this.state);
-        } else if (viewName === 'planning') {
-            this.views.planning.render(this.state.todaySessions);
-        } else if (viewName === 'focus') {
-            const activeSession = this.state.todaySessions[0]; // mock active
-            this.views.focus.render(activeSession);
-        }
+        const activeBtn = document.querySelector(`#bottom-nav button[data-view="${viewName}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
+        
+        this.router.render(viewName, this.state);
     }
 }

@@ -6,7 +6,7 @@ export class SchedulerEngine {
     }
     
     async generateDailyPlan(dateStr) {
-        AppLogger.info(`Génération du planning pour la date: ${dateStr}`);
+        AppLogger.info(`Scheduler: Génération du planning pour la date ${dateStr}`);
         
         // MVP: Mock pour la V1
         const mockSessions = [
@@ -19,6 +19,7 @@ export class SchedulerEngine {
             }
         ];
         
+        AppLogger.info(`Scheduler: ${mockSessions.length} sessions générées.`);
         return mockSessions;
     }
 }
