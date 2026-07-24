@@ -98,7 +98,7 @@ export class SchedulerEngine {
         });
 
         AppLogger.info(`Scheduler: ${mockHabits.length} habitudes et ${sessionsForToday.length} sessions générées.`);
-        return { habits: mockHabits, sessions: sessionsForToday };
+        return { date: dateStr, habits: mockHabits, sessions: sessionsForToday };
     }
 
     generateDefaultProgram() {

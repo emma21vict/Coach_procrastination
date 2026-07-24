@@ -5,7 +5,12 @@ export class PlanningView {
     }
     
     render(plan) {
-        let html = '<h2>📅 Planning du Jour</h2>';
+        let dateHtml = "du Jour";
+        if (plan && plan.date) {
+            const dateObj = new Date(plan.date + 'T12:00:00');
+            dateHtml = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+        }
+        let html = `<h2 style="text-transform: capitalize;">📅 Planning <span style="color:#00f2fe;">${dateHtml}</span></h2>`;
         
         html += '<h3 style="color: #ff9800; border-bottom: 1px solid #ff9800; padding-bottom: 5px;">🔥 Habitudes</h3>';
         html += '<ul class="session-list" style="margin-bottom: 20px;">';

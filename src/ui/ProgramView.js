@@ -35,10 +35,11 @@ export class ProgramView {
             `;
             
             weekObj.days.forEach((dayObj, dIdx) => {
+                const formattedDate = this.getFormattedDate(weekObj.week, dayObj.day);
                 html += `
                     <div style="background: #0f2027; padding: 10px; border-radius: 5px;">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;">
-                            <strong style="color: #ff9800;">Jour ${dayObj.day}</strong>
+                            <strong style="color: #ff9800;">Jour ${dayObj.day} - <span style="color: #00f2fe; text-transform: capitalize;">${formattedDate}</span></strong>
                         </div>
                 `;
                 dayObj.sessions.forEach((s, sIdx) => {
@@ -127,5 +128,18 @@ export class ProgramView {
             });
             this.app.saveProgram(programData);
         }
+    }
+
+    getFormattedDate(week, day) {
+        // Le bootcamp commence le 23 Juillet 2026
+        const startDate = new Date('2026-07-23T12:00:00');
+        const dayOffset = (week - 1) * 7 + (day - 1);
+        startDate.setDate(startDate.getDate() + dayOffset);
+        
+        return startDate.toLocaleDateString('fr-FR', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long'
+        });
     }
 }
