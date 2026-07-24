@@ -177,6 +177,33 @@
             }
         }, { once: true });
 
+        // WakeLock : Empêcher l'écran de s'éteindre
+        let wakeLock = null;
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                }
+            } catch (err) {}
+        }
+        function releaseWakeLock() {
+            if (wakeLock !== null) {
+                wakeLock.release().then(() => { wakeLock = null; });
+            }
+        }
+        document.addEventListener('visibilitychange', () => {
+            if (wakeLock !== null && document.visibilityState === 'visible') {
+                requestWakeLock();
+            }
+        });
+
+        // Notifications Système
+        function requestNotificationPermission() {
+            if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+        }
+
         function renderSchedule() {
             listEl.innerHTML = '';
             currentSchedule.forEach((block, index) => {
@@ -201,9 +228,12 @@
                 btnEl.textContent = "🔊 Système Actif (Désactiver)";
                 btnEl.classList.add('active');
                 playBeep(400, 0.1); 
+                requestNotificationPermission();
+                requestWakeLock();
             } else {
                 btnEl.textContent = "Activer les Alarmes Sonores";
                 btnEl.classList.remove('active');
+                releaseWakeLock();
             }
         }
 
@@ -250,6 +280,12 @@
                 if (alarmsEnabled) {
                     playBeep(880, 0.3);
                     setTimeout(() => playBeep(1200, 0.5), 400);
+                    
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        new Notification("🚨 C'est l'heure !", {
+                            body: "Prochain bloc : " + currentSchedule[currentActiveIndex].name
+                        });
+                    }
                 }
             }
             lastActiveIndex = currentActiveIndex;
