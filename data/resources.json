@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0",
+  "resources": [
+    { "id": "res_busuu", "name": "Busuu", "url": "https://www.busuu.com" },
+    { "id": "res_tryhackme", "name": "TryHackMe", "url": "https://tryhackme.com" },
+    { "id": "res_cisco", "name": "Cisco Networking Academy", "url": "https://www.netacad.com" },
+    { "id": "res_linuxjourney", "name": "Linux Journey", "url": "https://linuxjourney.com" },
+    { "id": "res_github", "name": "GitHub Skills", "url": "https://skills.github.com" }
+  ]
+}

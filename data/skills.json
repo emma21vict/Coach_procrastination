@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0",
+  "skills": [
+    { "id": "skill_english", "name": "Anglais (Conversationnel)", "level": 0, "xp": 0 },
+    { "id": "skill_cyber", "name": "Cybersécurité (Bases)", "level": 0, "xp": 0 },
+    { "id": "skill_linux", "name": "Administration Linux", "level": 0, "xp": 0 },
+    { "id": "skill_git", "name": "Maîtrise de Git", "level": 0, "xp": 0 },
+    { "id": "skill_osint", "name": "OSINT", "level": 0, "xp": 0 }
+  ]
+}

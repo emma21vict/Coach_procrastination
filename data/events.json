@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "1.0",
+  "events": [
+    { "id": "evt_forceN", "type": "Force-N", "priority": "Critique", "mandatory": true }
+  ]
+}
