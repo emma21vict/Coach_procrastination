@@ -10,7 +10,6 @@ export class FocusView {
                 <h2>⏱️ Mode Focus</h2>
                 <div class="stats" style="text-align: center;">
                     <h3>Aucune tâche en cours</h3>
-                    <p style="color: #ccc;">Tu as terminé tout ton programme d'aujourd'hui ! 🎉</p>
                     <button id="btn-focus-bilan" style="width: 100%; margin-top: 15px; background: #2a5268; color: white;">Faire mon Bilan</button>
                 </div>
             `;
@@ -23,9 +22,8 @@ export class FocusView {
             <h2>⏱️ Mode Focus</h2>
             <div class="stats" style="text-align: center;">
                 <h3>${session.title}</h3>
-                <p style="color: #00f2fe;">Ne te concentre que sur ça.</p>
                 <div class="timer">${session.expectedDuration}:00</div>
-                ${session.resourceLink ? `<a href="${session.resourceLink}" target="_blank" style="color: #00f2fe; display: block; margin-bottom: 20px; font-weight: bold; text-decoration: underline;">🔗 Ouvrir la ressource</a>` : ''}
+                ${session.resourceLink ? `<a href="${session.resourceLink}" target="_blank" style="color: #00f2fe; display: block; margin-bottom: 20px;">🔗 Ouvrir la ressource</a>` : ''}
                 
                 <div id="focus-evaluation" style="display: none; text-align: left; margin-top: 20px; border-top: 1px solid #2a5268; padding-top: 15px;">
                     <p style="margin-bottom: 10px; color:#88a7b7;">Bilan de la tâche :</p>
@@ -37,6 +35,9 @@ export class FocusView {
                         <option value="skipped">⏭ Ignorée (Sautée)</option>
                         <option value="cancelled">❌ Annulée</option>
                     </select>
+
+                    <label>Preuve (Lien, Capture, GitHub...)</label>
+                    <input type="text" id="f-proof" placeholder="URL ou note courte" style="width:100%; margin-bottom:10px; padding:5px; background:#0f2027; color:white; border:1px solid #2a5268;">
 
                     <label>Qualité (1-5)</label><input type="range" id="f-quality" min="1" max="5" value="3" style="width:100%; margin-bottom:10px;">
                     <label>Énergie (1-5)</label><input type="range" id="f-energy" min="1" max="5" value="3" style="width:100%; margin-bottom:10px;">
@@ -64,6 +65,7 @@ export class FocusView {
                 const id = e.currentTarget.getAttribute('data-id');
                 const metrics = {
                     status: document.getElementById('f-status').value,
+                    proof: document.getElementById('f-proof').value,
                     quality: parseInt(document.getElementById('f-quality').value),
                     energy: parseInt(document.getElementById('f-energy').value)
                 };
