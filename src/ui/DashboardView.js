@@ -49,12 +49,24 @@ export class DashboardView {
         }
         if (!missionsHtml) missionsHtml = "<p style='color:#88a7b7;'>Aucune mission définie hier.</p>";
 
+        let todayJournalHtml = "";
+        if (state.currentJournal) {
+            const moodEmojis = ["", "😭", "😟", "😐", "🙂", "🤩"];
+            const energyEmojis = ["", "🔋 (Vide)", "🔋 (Faible)", "🔋 (Moyenne)", "🔋 (Bonne)", "🔋 (Pleine)"];
+            todayJournalHtml = `
+                <hr style="border: 0; border-top: 1px solid #2a5268; margin: 10px 0;">
+                <p>Humeur : ${moodEmojis[state.currentJournal.mood] || 'Non renseigné'}</p>
+                <p>Énergie : ${energyEmojis[state.currentJournal.energy] || 'Non renseigné'}</p>
+            `;
+        }
+
         this.container.innerHTML = `
             <h2>🏠 Poste de Pilotage</h2>
             
             <div class="stats" style="border-left: 5px solid #ff9800;">
-                <h3>🌞 Missions du jour</h3>
+                <h3>🌞 État du jour</h3>
                 ${missionsHtml}
+                ${todayJournalHtml}
                 <hr style="border: 0; border-top: 1px solid #2a5268; margin: 10px 0;">
                 <p>Habitudes : <strong>${completedHabits} / ${totalHabits}</strong></p>
                 <button id="btn-dash-plan" style="margin-top:10px; width:100%; background:#00f2fe; color:#0f2027;">Aller au Planning</button>

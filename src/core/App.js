@@ -28,7 +28,8 @@ export class App {
             analytics: null,
             learningGraph: null,
             reflections: null,
-            monthlyReport: null
+            monthlyReport: null,
+            allJournals: {}
         };
         this.router = new Router('app-root', this);
     }
@@ -71,6 +72,7 @@ export class App {
         this.state.learningGraph = await this.learningGraphEngine.evaluateGraph();
         this.state.reflections = await this.reflectionEngine.analyzeJournalTrends();
         this.state.monthlyReport = await this.analyticsEngine.generateMonthlyReport(dToday.getFullYear(), dToday.getMonth());
+        this.state.allJournals = await this.storage.loadData('daily_journals') || {};
     }
     
     setupNavigation() {

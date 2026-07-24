@@ -43,12 +43,31 @@ export class PortfolioView {
         
         if (!proofsHtml) proofsHtml = "<p>Aucune preuve de compétence enregistrée pour le moment.</p>";
 
+        let pastJournalsHtml = "";
+        if (state.allJournals) {
+            const dates = Object.keys(state.allJournals).sort((a, b) => new Date(b) - new Date(a));
+            dates.forEach(date => {
+                const j = state.allJournals[date];
+                const moodEmojis = ["", "😭", "😟", "😐", "🙂", "🤩"];
+                pastJournalsHtml += `
+                <div style="background: #0f2027; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                    <h4 style="color: #00f2fe; margin-bottom: 5px;">📅 ${date} - ${moodEmojis[j.mood] || ''}</h4>
+                    ${j.learned ? `<p style="font-size:12px; margin-bottom:3px;"><strong>J'ai appris :</strong> ${j.learned}</p>` : ''}
+                    ${j.blockers ? `<p style="font-size:12px; margin-bottom:3px; color:#ff9800;"><strong>Bloqué par :</strong> ${j.blockers}</p>` : ''}
+                    ${j.improve ? `<p style="font-size:12px; margin-bottom:3px; color:#4CAF50;"><strong>À améliorer :</strong> ${j.improve}</p>` : ''}
+                </div>`;
+            });
+        }
+        if (!pastJournalsHtml) pastJournalsHtml = "<p>Aucun journal enregistré.</p>";
+
         this.container.innerHTML = `
             <h2>🏆 Mon Portfolio & Historique</h2>
             <div class="stats">
                 ${reportHtml}
                 <h3>Mes Preuves d'Apprentissage</h3>
                 ${proofsHtml}
+                <h3 style="margin-top:20px;">Mes Journaux Passés</h3>
+                ${pastJournalsHtml}
             </div>
         `;
     }
