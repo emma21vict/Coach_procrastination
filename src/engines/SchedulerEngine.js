@@ -1,5 +1,6 @@
 import { AppLogger } from '../utils/AppLogger.js';
 import { Habit } from '../models/Habit.js';
+import { DefaultBootcampProgram } from '../data/BootcampProgram.js';
 
 export class SchedulerEngine {
     constructor(storageProvider) {
@@ -8,6 +9,12 @@ export class SchedulerEngine {
     
     async getFullProgram() {
         let program = await this.storage.loadData('bootcamp_program');
+        
+        // MIGRATION : si l'ancien programme factice est détecté, on l'écrase
+        if (program && program.length > 0 && program[0].days[0].sessions.length > 0 && program[0].days[0].sessions[0].title === "TryHackMe - Module S1J1") {
+            program = null;
+        }
+        
         if (!program) {
             program = this.generateDefaultProgram();
             await this.storage.saveData('bootcamp_program', program);
@@ -57,20 +64,6 @@ export class SchedulerEngine {
     }
 
     generateDefaultProgram() {
-        const program = [];
-        for (let w = 1; w <= 4; w++) {
-            const week = { week: w, days: [] };
-            for (let d = 1; d <= 7; d++) {
-                week.days.push({
-                    day: d,
-                    sessions: [
-                        { title: `TryHackMe - Module S${w}J${d}`, skillId: 'cyber_linux', expectedDuration: 30, resourceLink: "https://tryhackme.com" },
-                        { title: `Busuu - Leçon ${d + (w-1)*7}`, skillId: 'english_speaking', expectedDuration: 15, resourceLink: "https://www.busuu.com" }
-                    ]
-                });
-            }
-            program.push(week);
-        }
-        return program;
+        return DefaultBootcampProgram;
     }
 }
