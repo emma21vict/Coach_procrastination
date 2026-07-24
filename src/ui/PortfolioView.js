@@ -4,44 +4,51 @@ export class PortfolioView {
         this.app = app;
     }
     
-    render(history) {
-        const totalRecords = history ? history.length : 0;
-        const totalXP = history ? history.reduce((sum, r) => sum + r.xpEarned, 0) : 0;
+    render(state) {
+        const report = state.monthlyReport;
+        let reportHtml = "";
         
-        let dateCounts = {};
-        if (history) {
-            history.forEach(r => {
-                dateCounts[r.date] = (dateCounts[r.date] || 0) + 1;
+        if (report) {
+            reportHtml = `
+                <div style="background: #152b36; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 5px solid #00f2fe;">
+                    <h3>📖 Le Livre de Bord (Mois ${report.month}/${report.year})</h3>
+                    <p style="font-size:16px; margin-top:10px; line-height:1.5;">${report.summary}</p>
+                    <ul style="margin-top:10px; margin-left: 20px; color:#88a7b7;">
+                        <li>Heures de vol : ${report.totalHours} h</li>
+                        <li>Jours actifs : ${report.daysActive}</li>
+                        <li>Qualité moyenne : ${report.avgQuality} / 5</li>
+                        <li>Preuves collectées : ${report.proofsGenerated}</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        let proofsHtml = "";
+        if (state.learningGraph) {
+            state.learningGraph.forEach(node => {
+                if (node.proofs && node.proofs.length > 0) {
+                    proofsHtml += `<h4 style="margin-top:10px;">${node.title}</h4>`;
+                    node.proofs.forEach(p => {
+                        proofsHtml += `
+                        <div style="background: #0f2027; padding: 10px; border-radius: 5px; margin-bottom: 5px;">
+                            <span style="color:#ff9800; font-weight:bold;">[${p.type}]</span> 
+                            ${p.description || "Sans description"}
+                            ${p.url ? `<a href="${p.url}" target="_blank" style="color:#00f2fe; margin-left:10px;">Voir la preuve</a>` : ''}
+                            <div style="color:#88a7b7; font-size:12px; margin-top:5px;">Date: ${p.date} | Source: ${p.source}</div>
+                        </div>`;
+                    });
+                }
             });
         }
         
-        let timelineHTML = '';
-        const today = new Date();
-        for(let i=6; i>=0; i--) {
-            let d = new Date(today);
-            d.setDate(today.getDate() - i);
-            let dStr = d.toLocaleDateString('fr-CA');
-            let hasActivity = dateCounts[dStr] > 0;
-            timelineHTML += `<div style="display:inline-block; width:20px; height:20px; margin:2px; border-radius:3px; background-color: ${hasActivity ? '#00f2fe' : '#2a5268'};" title="${dStr}: ${dateCounts[dStr] || 0} tâches"></div>`;
-        }
+        if (!proofsHtml) proofsHtml = "<p>Aucune preuve de compétence enregistrée pour le moment.</p>";
 
         this.container.innerHTML = `
-            <h2>🎓 Portfolio & Mémoire</h2>
+            <h2>🏆 Mon Portfolio & Historique</h2>
             <div class="stats">
-                <h3>Activité (7 derniers jours)</h3>
-                <div style="margin-top: 10px; display:flex; justify-content:center;">
-                    ${timelineHTML}
-                </div>
-            </div>
-            
-            <div class="stats" style="margin-top:15px;">
-                <h3>Tes Acquis</h3>
-                <ul style="list-style:none; padding:0; margin:0; color:#ccc;">
-                    <li>🎯 Sessions terminées : <strong>${totalRecords}</strong></li>
-                    <li>⭐ Expérience Totale : <strong>${totalXP} XP</strong></li>
-                    <li>🏆 Certifications : <em>À venir</em></li>
-                    <li>💻 Projets GitHub : <em>À venir</em></li>
-                </ul>
+                ${reportHtml}
+                <h3>Mes Preuves d'Apprentissage</h3>
+                ${proofsHtml}
             </div>
         `;
     }

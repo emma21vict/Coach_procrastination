@@ -73,4 +73,41 @@ export class AnalyticsEngine {
             insights: insights
         };
     }
+
+    async generateMonthlyReport(year, month) {
+        const history = await this.storage.loadData('study_history') || [];
+        
+        const monthRecords = history.filter(r => {
+            const date = new Date(r.date);
+            return date.getFullYear() === year && date.getMonth() === month;
+        });
+
+        let totalTimeMinutes = 0;
+        let qualitySum = 0;
+        let qualityCount = 0;
+        let daysActive = new Set();
+        let proofsCount = 0;
+
+        monthRecords.forEach(r => {
+            if (r.status === 'completed' || r.status === 'partial') {
+                totalTimeMinutes += r.actualDuration;
+                daysActive.add(r.date);
+                qualitySum += r.quality;
+                qualityCount++;
+                if (r.proof && r.proof.url) proofsCount++;
+            }
+        });
+
+        const avgQuality = qualityCount > 0 ? (qualitySum / qualityCount).toFixed(1) : 0;
+        
+        return {
+            month: month + 1,
+            year: year,
+            totalHours: (totalTimeMinutes / 60).toFixed(1),
+            daysActive: daysActive.size,
+            avgQuality: avgQuality,
+            proofsGenerated: proofsCount,
+            summary: \`En \${month + 1}/\${year}, tu as investi \${(totalTimeMinutes / 60).toFixed(1)} heures réparties sur \${daysActive.size} jours. Tu as généré \${proofsCount} preuves tangibles de tes compétences.\`
+        };
+    }
 }

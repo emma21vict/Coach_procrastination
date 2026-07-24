@@ -29,7 +29,7 @@ export class StudyRecord {
         this.device = "Desktop";
         this.githubLink = "";
         this.revisionPlanned = false;
-        this.proof = ""; // Lien, capture, ou note
+        this.proof = null; // { type, url, date, description, source }
     }
     
     finish(endTime, actualDuration, status, completionRate, metrics) {
@@ -47,7 +47,7 @@ export class StudyRecord {
             this.notes = metrics.notes || "";
             this.source = metrics.source || "";
             this.device = metrics.device || "Desktop";
-            this.proof = metrics.proof || "";
+            this.proof = metrics.proof || null;
         }
     }
 }

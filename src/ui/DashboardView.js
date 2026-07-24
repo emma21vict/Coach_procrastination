@@ -21,39 +21,55 @@ export class DashboardView {
         }
 
         let skillsHtml = "";
-        if (state.knowledgeGraph) {
-            state.knowledgeGraph.forEach(node => {
-                skillsHtml += `
-                <div style="margin-bottom: 10px;">
-                    <span style="display:inline-block; width:120px;">${node.title}</span>
-                    <span style="display:inline-block; width:100px; background:#0f2027; border-radius:3px;">
-                        <span style="display:inline-block; width:${node.estimatedLevel}%; background:#00f2fe; height:10px; border-radius:3px;"></span>
-                    </span>
-                    <span style="margin-left:10px; font-weight:bold;">${node.estimatedLevel} %</span>
-                </div>`;
+        let activeSkills = 0;
+        let forgottenSkills = 0;
+        
+        if (state.learningGraph) {
+            state.learningGraph.forEach(node => {
+                if (node.level > 0) {
+                    activeSkills++;
+                    skillsHtml += `
+                    <div style="margin-bottom: 10px;">
+                        <span style="display:inline-block; width:140px;">${node.title}</span>
+                        <span style="display:inline-block; width:80px; background:#0f2027; border-radius:3px;">
+                            <span style="display:inline-block; width:${node.level}%; background:#00f2fe; height:10px; border-radius:3px;"></span>
+                        </span>
+                        <span style="margin-left:10px; font-weight:bold;">${node.level}%</span>
+                    </div>`;
+                } else {
+                    forgottenSkills++;
+                }
             });
         }
 
-        let prioritiesHtml = "";
+        let missionsHtml = "";
         if (state.yesterdayJournal) {
-            if (state.yesterdayJournal.priority1) prioritiesHtml += `<p>1️⃣ ${state.yesterdayJournal.priority1}</p>`;
-            if (state.yesterdayJournal.priority2) prioritiesHtml += `<p>2️⃣ ${state.yesterdayJournal.priority2}</p>`;
+            if (state.yesterdayJournal.mission1) missionsHtml += `<p>🎯 ${state.yesterdayJournal.mission1}</p>`;
+            if (state.yesterdayJournal.mission2) missionsHtml += `<p>🎯 ${state.yesterdayJournal.mission2}</p>`;
         }
-        if (!prioritiesHtml) prioritiesHtml = "<p style='color:#88a7b7;'>Aucune priorité définie hier.</p>";
+        if (!missionsHtml) missionsHtml = "<p style='color:#88a7b7;'>Aucune mission définie hier.</p>";
 
         this.container.innerHTML = `
             <h2>🏠 Poste de Pilotage</h2>
             
             <div class="stats" style="border-left: 5px solid #ff9800;">
-                <h3>🌞 État du jour</h3>
-                ${prioritiesHtml}
+                <h3>🌞 Missions du jour</h3>
+                ${missionsHtml}
                 <hr style="border: 0; border-top: 1px solid #2a5268; margin: 10px 0;">
-                <p>Habitudes accomplies : <strong>${completedHabits} / ${totalHabits}</strong></p>
+                <p>Habitudes : <strong>${completedHabits} / ${totalHabits}</strong></p>
                 <button id="btn-dash-plan" style="margin-top:10px; width:100%; background:#00f2fe; color:#0f2027;">Aller au Planning</button>
+            </div>
+            
+            <div class="stats" style="border-left: 5px solid #4CAF50; margin-top: 15px;">
+                <h3>🩺 Santé du Learning OS</h3>
+                <p>Habitudes accomplies : <strong>${completedHabits}/${totalHabits}</strong></p>
+                <p>Compétences actives : <strong>${activeSkills}</strong></p>
+                <p>Compétences oubliées : <strong>${forgottenSkills}</strong></p>
+                <p>Objectifs : <strong>0 en retard</strong></p>
             </div>
 
             <div class="stats" style="border-left: 5px solid #00f2fe; margin-top: 15px;">
-                <h3>🧠 Évolution des Compétences</h3>
+                <h3>🧠 Learning Graph (Compétences)</h3>
                 ${skillsHtml || '<p>Aucune donnée de compétence pour le moment.</p>'}
             </div>
 

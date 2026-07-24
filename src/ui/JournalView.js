@@ -10,8 +10,8 @@ export class JournalView {
         const learned = journalData?.learned || "";
         const blockers = journalData?.blockers || "";
         const improve = journalData?.improve || "";
-        const prio1 = journalData?.priority1 || "";
-        const prio2 = journalData?.priority2 || "";
+        const mission1 = journalData?.mission1 || "";
+        const mission2 = journalData?.mission2 || "";
         
         this.container.innerHTML = `
             <h2>📖 Journal Personnel</h2>
@@ -36,11 +36,11 @@ export class JournalView {
                 <hr style="border: 0; border-top: 1px solid #2a5268; margin: 15px 0;">
                 
                 <p style="color: #00f2fe; font-weight: bold;">📅 Demain</p>
-                <label style="display:block;">Priorité n°1</label>
-                <input type="text" id="j-prio1" value="${prio1}" style="width:100%; margin-bottom:10px; background:#0f2027; color:white; border:1px solid #2a5268; border-radius:5px; padding:5px;">
+                <label style="display:block;">🎯 Mission principale</label>
+                <input type="text" id="j-m1" value="${mission1}" style="width:100%; margin-bottom:10px; background:#0f2027; color:white; border:1px solid #2a5268; border-radius:5px; padding:5px;">
                 
-                <label style="display:block;">Priorité n°2</label>
-                <input type="text" id="j-prio2" value="${prio2}" style="width:100%; background:#0f2027; color:white; border:1px solid #2a5268; border-radius:5px; padding:5px;">
+                <label style="display:block;">🎯 Mission secondaire</label>
+                <input type="text" id="j-m2" value="${mission2}" style="width:100%; background:#0f2027; color:white; border:1px solid #2a5268; border-radius:5px; padding:5px;">
 
                 <button id="btn-save-journal" style="width:100%; margin-top:20px; background:#00f2fe; color:#0f2027;">Sauvegarder mon Journal</button>
             </div>
@@ -55,8 +55,8 @@ export class JournalView {
                     learned: document.getElementById('j-learned').value,
                     blockers: document.getElementById('j-blockers').value,
                     improve: document.getElementById('j-improve').value,
-                    priority1: document.getElementById('j-prio1').value,
-                    priority2: document.getElementById('j-prio2').value
+                    mission1: document.getElementById('j-m1').value,
+                    mission2: document.getElementById('j-m2').value
                 };
                 this.app.saveJournal(data);
                 btnSave.innerText = "✅ Sauvegardé !";

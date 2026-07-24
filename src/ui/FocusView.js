@@ -36,8 +36,18 @@ export class FocusView {
                         <option value="cancelled">❌ Annulée</option>
                     </select>
 
-                    <label>Preuve (Lien, Capture, GitHub...)</label>
-                    <input type="text" id="f-proof" placeholder="URL ou note courte" style="width:100%; margin-bottom:10px; padding:5px; background:#0f2027; color:white; border:1px solid #2a5268;">
+                    <div style="background: #152b36; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">Preuve (Proof)</label>
+                        <select id="f-proof-type" style="width:100%; margin-bottom:5px; padding:5px; background:#0f2027; color:white; border:1px solid #2a5268;">
+                            <option value="">-- Aucune --</option>
+                            <option value="GitHub Commit">GitHub Commit</option>
+                            <option value="Certificat">Certificat</option>
+                            <option value="Projet">Lien de Projet</option>
+                            <option value="Note">Note / Résumé</option>
+                        </select>
+                        <input type="text" id="f-proof-url" placeholder="URL (optionnel)" style="width:100%; margin-bottom:5px; padding:5px; background:#0f2027; color:white; border:1px solid #2a5268;">
+                        <input type="text" id="f-proof-desc" placeholder="Description courte" style="width:100%; padding:5px; background:#0f2027; color:white; border:1px solid #2a5268;">
+                    </div>
 
                     <label>Qualité (1-5)</label><input type="range" id="f-quality" min="1" max="5" value="3" style="width:100%; margin-bottom:10px;">
                     <label>Énergie (1-5)</label><input type="range" id="f-energy" min="1" max="5" value="3" style="width:100%; margin-bottom:10px;">
@@ -63,9 +73,21 @@ export class FocusView {
         if (btnConfirm) {
             btnConfirm.addEventListener('click', (e) => {
                 const id = e.currentTarget.getAttribute('data-id');
+                const proofType = document.getElementById('f-proof-type').value;
+                let proofObj = null;
+                if (proofType) {
+                    proofObj = {
+                        type: proofType,
+                        url: document.getElementById('f-proof-url').value,
+                        description: document.getElementById('f-proof-desc').value,
+                        date: new Date().toLocaleDateString('fr-CA'),
+                        source: session.title
+                    };
+                }
+                
                 const metrics = {
                     status: document.getElementById('f-status').value,
-                    proof: document.getElementById('f-proof').value,
+                    proof: proofObj,
                     quality: parseInt(document.getElementById('f-quality').value),
                     energy: parseInt(document.getElementById('f-energy').value)
                 };

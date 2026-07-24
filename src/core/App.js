@@ -1,7 +1,7 @@
 import { Router } from './Router.js';
 import { AppLogger } from '../utils/AppLogger.js';
 import { AnalyticsEngine } from '../engines/AnalyticsEngine.js';
-import { KnowledgeEngine } from '../engines/KnowledgeEngine.js';
+import { LearningGraphEngine } from '../engines/LearningGraphEngine.js';
 import { GoalEngine } from '../engines/GoalEngine.js';
 import { ReflectionEngine } from '../engines/ReflectionEngine.js';
 
@@ -13,7 +13,7 @@ export class App {
         this.studyRecordEngine = studyRecordEngine;
         
         this.analyticsEngine = new AnalyticsEngine(storage);
-        this.knowledgeEngine = new KnowledgeEngine(storage);
+        this.learningGraphEngine = new LearningGraphEngine(storage);
         this.goalEngine = new GoalEngine(storage);
         this.reflectionEngine = new ReflectionEngine(storage);
         
@@ -26,8 +26,9 @@ export class App {
             yesterdayJournal: null,
             fullHistory: [],
             analytics: null,
-            knowledgeGraph: null,
-            reflections: null
+            learningGraph: null,
+            reflections: null,
+            monthlyReport: null
         };
         this.router = new Router('app-root', this);
     }
@@ -54,10 +55,11 @@ export class App {
     }
     
     async refreshUserStats() {
-        const localDate = new Date().toLocaleDateString('fr-CA');
-        let d = new Date();
-        d.setDate(d.getDate() - 1);
-        const yesterdayDate = d.toLocaleDateString('fr-CA');
+        const dToday = new Date();
+        const localDate = dToday.toLocaleDateString('fr-CA');
+        let dYesterday = new Date();
+        dYesterday.setDate(dYesterday.getDate() - 1);
+        const yesterdayDate = dYesterday.toLocaleDateString('fr-CA');
 
         this.state.dailyStats = await this.studyRecordEngine.getDailyStats(localDate);
         this.state.userProfile = await this.storage.loadData('user_profile') || { xpTotal: 0, streak: 1, lastActive: null };
@@ -66,8 +68,9 @@ export class App {
         this.state.fullHistory = await this.studyRecordEngine.getFullHistory();
         
         this.state.analytics = await this.analyticsEngine.generateInsights(localDate);
-        this.state.knowledgeGraph = await this.knowledgeEngine.evaluateGraph();
+        this.state.learningGraph = await this.learningGraphEngine.evaluateGraph();
         this.state.reflections = await this.reflectionEngine.analyzeJournalTrends();
+        this.state.monthlyReport = await this.analyticsEngine.generateMonthlyReport(dToday.getFullYear(), dToday.getMonth());
     }
     
     setupNavigation() {
