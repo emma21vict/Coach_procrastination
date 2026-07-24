@@ -161,8 +161,21 @@
         const clockEl = document.getElementById('clock');
         const listEl = document.getElementById('schedule-list');
         const btnEl = document.getElementById('alarm-btn');
-        let alarmsEnabled = false;
+        
+        let alarmsEnabled = localStorage.getItem('alarmsEnabled') === 'true';
         let lastActiveIndex = -1;
+
+        if (alarmsEnabled) {
+            btnEl.textContent = "🔊 Système Actif (Désactiver)";
+            btnEl.classList.add('active');
+        }
+
+        // Débloquer l'audio au premier clic sur la page si les alarmes sont déjà activées
+        document.body.addEventListener('click', () => {
+            if(alarmsEnabled) {
+                try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); ctx.resume(); } catch(e) {}
+            }
+        }, { once: true });
 
         function renderSchedule() {
             listEl.innerHTML = '';
@@ -183,6 +196,7 @@
 
         function toggleAlarms() {
             alarmsEnabled = !alarmsEnabled;
+            localStorage.setItem('alarmsEnabled', alarmsEnabled);
             if (alarmsEnabled) {
                 btnEl.textContent = "🔊 Système Actif (Désactiver)";
                 btnEl.classList.add('active');
