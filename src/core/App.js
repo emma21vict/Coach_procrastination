@@ -30,14 +30,14 @@ export class App {
     }
     
     setupNavigation() {
-        document.getElementById('nav-dash').addEventListener('click', () => this.renderView('dashboard'));
-        document.getElementById('nav-plan').addEventListener('click', () => this.renderView('planning'));
+        document.getElementById('nav-dashboard').addEventListener('click', () => this.renderView('dashboard'));
+        document.getElementById('nav-planning').addEventListener('click', () => this.renderView('planning'));
         document.getElementById('nav-focus').addEventListener('click', () => this.renderView('focus'));
     }
     
     renderView(viewName) {
         document.querySelectorAll('#bottom-nav button').forEach(b => b.classList.remove('active'));
-        document.getElementById(`nav-${viewName.substring(0,4)}`).classList.add('active');
+        document.getElementById(`nav-${viewName}`).classList.add('active');
         
         if (viewName === 'dashboard') {
             this.views.dashboard.render(this.state);
