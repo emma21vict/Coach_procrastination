@@ -107,7 +107,7 @@ export class AnalyticsEngine {
             daysActive: daysActive.size,
             avgQuality: avgQuality,
             proofsGenerated: proofsCount,
-            summary: \`En \${month + 1}/\${year}, tu as investi \${(totalTimeMinutes / 60).toFixed(1)} heures réparties sur \${daysActive.size} jours. Tu as généré \${proofsCount} preuves tangibles de tes compétences.\`
+            summary: `En ${month + 1}/${year}, tu as investi ${(totalTimeMinutes / 60).toFixed(1)} heures réparties sur ${daysActive.size} jours. Tu as généré ${proofsCount} preuves tangibles de tes compétences.`
         };
     }
 }
