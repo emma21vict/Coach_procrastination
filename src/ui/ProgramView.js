@@ -47,7 +47,10 @@ export class ProgramView {
                         <div style="margin-left: 10px; margin-bottom: 10px; padding-left: 10px; border-left: 2px solid #2a5268;">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <span style="font-size:14px;">${s.title} <strong style="color:#ff9800; font-size:12px;">(${skillLabel})</strong> - ${s.expectedDuration} min</span>
-                                <button class="btn-edit-session" data-w="${wIdx}" data-d="${dIdx}" data-s="${sIdx}" style="background:transparent; border:none; color:#00f2fe; cursor:pointer;">✏️ Éditer</button>
+                                <div>
+                                    <button class="btn-edit-session" data-w="${wIdx}" data-d="${dIdx}" data-s="${sIdx}" style="background:transparent; border:none; color:#00f2fe; cursor:pointer;">✏️ Éditer</button>
+                                    <button class="btn-delete-session" data-w="${wIdx}" data-d="${dIdx}" data-s="${sIdx}" style="background:transparent; border:none; color:#ff5252; cursor:pointer; margin-left:5px;">🗑️</button>
+                                </div>
                             </div>
                             ${s.resourceLink ? `<a href="${s.resourceLink}" target="_blank" style="font-size:12px; color:#88a7b7;">🔗 Lien</a>` : ''}
                         </div>
@@ -73,6 +76,15 @@ export class ProgramView {
             });
         });
         
+        this.container.querySelectorAll('.btn-delete-session').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const w = e.target.getAttribute('data-w');
+                const d = e.target.getAttribute('data-d');
+                const s = e.target.getAttribute('data-s');
+                this.deleteSession(programData, w, d, s);
+            });
+        });
+        
         this.container.querySelectorAll('.btn-add-session').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const w = e.target.getAttribute('data-w');
@@ -92,6 +104,13 @@ export class ProgramView {
             const newLink = prompt("Lien de ressource (optionnel) :", session.resourceLink || "");
             if (newLink !== null) session.resourceLink = newLink;
             
+            this.app.saveProgram(programData);
+        }
+    }
+
+    deleteSession(programData, w, d, s) {
+        if (confirm("Supprimer cette session ?")) {
+            programData[w].days[d].sessions.splice(s, 1);
             this.app.saveProgram(programData);
         }
     }

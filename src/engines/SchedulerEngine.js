@@ -10,8 +10,8 @@ export class SchedulerEngine {
     async getFullProgram() {
         let program = await this.storage.loadData('bootcamp_program');
         
-        // MIGRATION : On force le programme de 4 semaines s'il n'est pas complet, ou s'il manque les cours d'anglais/éloquence ajoutés plus tard.
-        if (program && (!Array.isArray(program) || program.length !== 4 || !program[0].days[0].sessions[0].title.includes("Anglais"))) {
+        // MIGRATION : On force le programme de 4 semaines s'il n'est pas complet, ou s'il s'agit de l'ancienne version surchargée (> 5 sessions le jour 1)
+        if (program && (!Array.isArray(program) || program.length !== 4 || program[0].days[0].sessions.length > 5)) {
             program = null;
         }
         
