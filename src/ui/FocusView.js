@@ -82,7 +82,7 @@ export class FocusView {
         const updateTimerDisplay = () => {
             const m = Math.floor(remainingSeconds / 60);
             const s = remainingSeconds % 60;
-            timerDisplay.textContent = \`\${m.toString().padStart(2, '0')}:\${s.toString().padStart(2, '0')}\`;
+            timerDisplay.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         };
 
         this.timerInterval = setInterval(() => {
