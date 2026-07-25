@@ -2,27 +2,40 @@ export class FocusView {
     constructor(containerId, app) {
         this.container = document.getElementById(containerId);
         this.app = app;
+        this.timerInterval = null;
     }
     
     render(session) {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+        }
+
         if (!session) {
             this.container.innerHTML = `
                 <h2>⏱️ Mode Focus</h2>
                 <div class="stats" style="text-align: center;">
-                    <h3>Aucune tâche en cours</h3>
+                    <h3>Toutes les sessions sont terminées ! 🎉</h3>
                     <button id="btn-focus-bilan" style="width: 100%; margin-top: 15px; background: #2a5268; color: white;">Faire mon Bilan</button>
+                    <button id="btn-focus-back" style="width: 100%; margin-top: 10px; background: transparent; color: #00f2fe; border: 1px solid #00f2fe;">Retour au Planning</button>
                 </div>
             `;
             const btnBilan = document.getElementById('btn-focus-bilan');
             if (btnBilan) btnBilan.addEventListener('click', () => this.app.showBilan());
+            
+            const btnBack = document.getElementById('btn-focus-back');
+            if (btnBack) btnBack.addEventListener('click', () => this.app.renderView('planning'));
+            
             return;
         }
 
         this.container.innerHTML = `
             <h2>⏱️ Mode Focus</h2>
             <div class="stats" style="text-align: center;">
-                <h3>${session.title}</h3>
-                <div class="timer">${session.expectedDuration}:00</div>
+                <h3 style="color: #ff9800; font-size: 20px;">${session.title}</h3>
+                <div style="font-size: 14px; color: #88a7b7; margin-bottom: 15px;">Objectif : ${session.skillLabel || ''}</div>
+                <div id="focus-timer-display" style="font-size: 48px; font-weight: bold; color: #00f2fe; text-shadow: 0 0 10px rgba(0,242,254,0.5); margin: 20px 0;">
+                    ${session.expectedDuration}:00
+                </div>
                 ${session.resourceLink ? `<a href="${session.resourceLink}" target="_blank" style="color: #00f2fe; display: block; margin-bottom: 20px;">🔗 Ouvrir la ressource</a>` : ''}
                 
                 <div id="focus-evaluation" style="display: none; text-align: left; margin-top: 20px; border-top: 1px solid #2a5268; padding-top: 15px;">
@@ -62,6 +75,30 @@ export class FocusView {
         const btnPreComplete = document.getElementById('btn-pre-complete-task');
         const evalSection = document.getElementById('focus-evaluation');
         const btnConfirm = document.getElementById('btn-confirm-task');
+        const timerDisplay = document.getElementById('focus-timer-display');
+
+        let remainingSeconds = session.expectedDuration * 60;
+        
+        const updateTimerDisplay = () => {
+            const m = Math.floor(remainingSeconds / 60);
+            const s = remainingSeconds % 60;
+            timerDisplay.textContent = \`\${m.toString().padStart(2, '0')}:\${s.toString().padStart(2, '0')}\`;
+        };
+
+        this.timerInterval = setInterval(() => {
+            if (remainingSeconds > 0) {
+                remainingSeconds--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(this.timerInterval);
+                timerDisplay.style.color = '#ff9800';
+                timerDisplay.style.textShadow = '0 0 10px rgba(255,152,0,0.5)';
+                // Auto-show evaluation when time is up
+                if (btnPreComplete && evalSection.style.display === 'none') {
+                    btnPreComplete.click();
+                }
+            }
+        }, 1000);
 
         if (btnPreComplete) {
             btnPreComplete.addEventListener('click', () => {

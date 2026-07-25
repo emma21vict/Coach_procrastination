@@ -12,7 +12,10 @@ export class PlanningView {
         }
         let html = `<h2 style="text-transform: capitalize;">📅 Planning <span style="color:#00f2fe;">${dateHtml}</span></h2>`;
         
-        html += '<h3 style="color: #00f2fe; border-bottom: 1px solid #00f2fe; padding-bottom: 5px;">🎯 Sessions du Bootcamp</h3>';
+        html += '<h3 style="color: #00f2fe; border-bottom: 1px solid #00f2fe; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">';
+        html += '<span>🎯 Sessions du Bootcamp</span>';
+        html += '<button id="btn-launch-focus" style="background:#00f2fe; color:#0f2027; padding:5px 10px; font-size:12px; border-radius:15px; border:none; cursor:pointer;">▶️ Lancer Focus</button>';
+        html += '</h3>';
         html += '<ul class="session-list" style="margin-bottom: 20px;">';
         if (plan && plan.sessions) {
             plan.sessions.forEach(s => {
@@ -64,6 +67,13 @@ export class PlanningView {
                 this.app.markSessionCompleted(id, { status: 'completed' }); // Default to completed from Planning list
             });
         });
+        
+        const btnFocus = document.getElementById('btn-launch-focus');
+        if (btnFocus) {
+            btnFocus.addEventListener('click', () => {
+                this.app.renderView('focus');
+            });
+        }
         
         const btnBilan = document.getElementById('btn-show-bilan');
         if (btnBilan) {
