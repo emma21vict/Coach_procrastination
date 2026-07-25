@@ -12,24 +12,8 @@ export class PlanningView {
         }
         let html = `<h2 style="text-transform: capitalize;">📅 Planning <span style="color:#00f2fe;">${dateHtml}</span></h2>`;
         
-        html += '<h3 style="color: #ff9800; border-bottom: 1px solid #ff9800; padding-bottom: 5px;">🔥 Habitudes</h3>';
-        html += '<ul class="session-list" style="margin-bottom: 20px;">';
-        if (plan && plan.habits) {
-            plan.habits.forEach(h => {
-                const isCompleted = h.completed;
-                const style = isCompleted ? 'text-decoration: line-through; opacity: 0.5;' : '';
-                const checkIcon = isCompleted ? '✅' : '⬜';
-                
-                html += `<li style="${style}; padding: 10px; margin-bottom: 8px;">
-                    <strong style="cursor: pointer;" class="habit-checkbox" data-id="${h.id}">${checkIcon} ${h.title} (${h.minTime} min)</strong>
-                    <br><small style="color: #88a7b7;">Objectif : ${h.skillLabel}</small>
-                </li>`;
-            });
-        }
-        html += '</ul>';
-
         html += '<h3 style="color: #00f2fe; border-bottom: 1px solid #00f2fe; padding-bottom: 5px;">🎯 Sessions du Bootcamp</h3>';
-        html += '<ul class="session-list">';
+        html += '<ul class="session-list" style="margin-bottom: 20px;">';
         if (plan && plan.sessions) {
             plan.sessions.forEach(s => {
                 const isCompleted = s.completed;
@@ -43,6 +27,22 @@ export class PlanningView {
                     <strong style="cursor: pointer;" class="task-checkbox" data-id="${s.id}">${checkIcon} ${timeHtml}${s.title} <span style="color:#ff9800; font-size:12px;">(${s.skillLabel || ''})</span></strong><br>
                     <small style="color: #ccc;">⏱ ${s.expectedDuration} min | ⚡ Priorité: ${s.priority}</small>
                     ${!isCompleted ? resourceLink : ''}
+                </li>`;
+            });
+        }
+        html += '</ul>';
+
+        html += '<h3 style="color: #ff9800; border-bottom: 1px solid #ff9800; padding-bottom: 5px;">🔥 Habitudes du Soir</h3>';
+        html += '<ul class="session-list" style="margin-bottom: 20px;">';
+        if (plan && plan.habits) {
+            plan.habits.forEach(h => {
+                const isCompleted = h.completed;
+                const style = isCompleted ? 'text-decoration: line-through; opacity: 0.5;' : '';
+                const checkIcon = isCompleted ? '✅' : '⬜';
+                
+                html += `<li style="${style}; padding: 10px; margin-bottom: 8px;">
+                    <strong style="cursor: pointer;" class="habit-checkbox" data-id="${h.id}">${checkIcon} ${h.title} (${h.minTime} min)</strong>
+                    <br><small style="color: #88a7b7;">Objectif : ${h.skillLabel}</small>
                 </li>`;
             });
         }
