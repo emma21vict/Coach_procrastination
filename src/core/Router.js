@@ -1,10 +1,10 @@
-import { DashboardView } from '../ui/DashboardView.js?v=2';
-import { PlanningView } from '../ui/PlanningView.js?v=4';
-import { FocusView } from '../ui/FocusView.js?v=5';
-import { BilanView } from '../ui/BilanView.js?v=2';
-import { JournalView } from '../ui/JournalView.js?v=2';
-import { PortfolioView } from '../ui/PortfolioView.js?v=2';
-import { ProgramView } from '../ui/ProgramView.js?v=2';
+import { DashboardView } from '../ui/DashboardView.js?v=3';
+import { PlanningView } from '../ui/PlanningView.js?v=5';
+import { FocusView } from '../ui/FocusView.js?v=6';
+import { BilanView } from '../ui/BilanView.js?v=3';
+import { JournalView } from '../ui/JournalView.js?v=3';
+import { PortfolioView } from '../ui/PortfolioView.js?v=3';
+import { ProgramView } from '../ui/ProgramView.js?v=3';
 
 export class Router {
     constructor(containerId, app) {
