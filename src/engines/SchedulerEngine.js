@@ -1,6 +1,6 @@
 import { AppLogger } from '../utils/AppLogger.js';
 import { Habit } from '../models/Habit.js';
-import { DefaultBootcampProgram } from '../data/BootcampProgram.js';
+import { DefaultBootcampProgram } from '../data/BootcampProgram.js?v=2';
 
 export class SchedulerEngine {
     constructor(storageProvider) {
@@ -102,7 +102,13 @@ export class SchedulerEngine {
                 expectedDuration: s.expectedDuration,
                 priority: s.priority || "Normale",
                 resourceLink: s.resourceLink,
-                startTime: startTimeStr
+                startTime: startTimeStr,
+                objective: s.objective || "",
+                expectedResult: s.expectedResult || "",
+                proof: s.proof || "",
+                difficulty: s.difficulty || "🟢",
+                xp: s.xp || 60,
+                block: s.block || ""
             };
         });
 
