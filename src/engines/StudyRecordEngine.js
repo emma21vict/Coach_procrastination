@@ -81,8 +81,8 @@ export class StudyRecordEngine {
     async getDailyStats(dateStr) {
         const history = await this.storage.loadData('study_history') || [];
         const dailyRecords = history.filter(r => r.date === dateStr);
-        const xpTotal = dailyRecords.reduce((sum, r) => sum + r.xpEarned, 0);
-        const focusTime = dailyRecords.reduce((sum, r) => sum + r.realDuration, 0);
+        const xpTotal = dailyRecords.reduce((sum, r) => sum + (r.xpEarned || 0), 0);
+        const focusTime = dailyRecords.reduce((sum, r) => sum + (r.actualDuration || r.plannedDuration || 0), 0);
         return { completedTasksCount: dailyRecords.length, xpTotal, focusTime };
     }
 

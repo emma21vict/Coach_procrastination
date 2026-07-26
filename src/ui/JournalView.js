@@ -63,7 +63,7 @@ export class JournalView {
                 btnSave.style.background = "#2a5268";
                 btnSave.style.color = "white";
                 setTimeout(() => {
-                    this.app.renderView('dashboard');
+                    this.app.renderView('coach');
                 }, 1000);
             });
         }
