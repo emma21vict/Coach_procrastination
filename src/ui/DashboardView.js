@@ -9,17 +9,12 @@ export class DashboardView {
         const totalHabits = state.dailyPlan && state.dailyPlan.habits ? state.dailyPlan.habits.length : 0;
         
         let insightsHtml = "";
-        if (state.analytics && state.analytics.insights) {
-            state.analytics.insights.forEach(insight => {
+        if (state.coachInsights && state.coachInsights.length > 0) {
+            state.coachInsights.forEach(insight => {
                 insightsHtml += `<p style="margin-bottom:5px;"><strong>${insight.type === 'warning' ? '⚠️' : '✅'} ${insight.text}</strong></p>`;
             });
         }
-        if (state.reflections && state.reflections.length > 0) {
-            state.reflections.forEach(ref => {
-                insightsHtml += `<p style="margin-bottom:5px;"><strong>🧠 ${ref}</strong></p>`;
-            });
-        }
-
+        
         let skillsHtml = "";
         let activeSkills = 0;
         let forgottenSkills = 0;
@@ -42,21 +37,14 @@ export class DashboardView {
             });
         }
 
-        let missionsHtml = "";
-        if (state.yesterdayJournal) {
-            if (state.yesterdayJournal.mission1) missionsHtml += `<p>🎯 ${state.yesterdayJournal.mission1}</p>`;
-            if (state.yesterdayJournal.mission2) missionsHtml += `<p>🎯 ${state.yesterdayJournal.mission2}</p>`;
-        }
-        if (!missionsHtml) missionsHtml = "<p style='color:#88a7b7;'>Aucune mission définie hier.</p>";
-
-        let todayJournalHtml = "";
-        if (state.currentJournal) {
-            const moodEmojis = ["", "😭", "😟", "😐", "🙂", "🤩"];
-            const energyEmojis = ["", "🔋 (Vide)", "🔋 (Faible)", "🔋 (Moyenne)", "🔋 (Bonne)", "🔋 (Pleine)"];
-            todayJournalHtml = `
-                <hr style="border: 0; border-top: 1px solid #2a5268; margin: 10px 0;">
-                <p>Humeur : ${moodEmojis[state.currentJournal.mood] || 'Non renseigné'}</p>
-                <p>Énergie : ${energyEmojis[state.currentJournal.energy] || 'Non renseigné'}</p>
+        let healthHtml = "";
+        if (state.systemHealth) {
+            healthHtml = `
+                <p>Habitudes : <strong>${state.systemHealth.habitsScore || completedHabits} / ${totalHabits}</strong></p>
+                <p>Compétences actives : <strong>${state.systemHealth.activeSkills || activeSkills}</strong></p>
+                <p>Compétences oubliées : <strong>${state.systemHealth.forgottenSkills || forgottenSkills}</strong></p>
+                <p>Objectifs en retard : <strong>${state.systemHealth.lateGoals || 0}</strong></p>
+                <p>Streak : <strong>${state.systemHealth.streak || 0} jours</strong></p>
             `;
         }
 
@@ -64,31 +52,33 @@ export class DashboardView {
             <h2>🏠 Poste de Pilotage</h2>
             
             <div class="stats" style="border-left: 5px solid #ff9800;">
-                <h3>🌞 État du jour</h3>
+                <h3>🎯 Mission de la Semaine : ${theme}</h3>
+                <p style="font-style:italic; font-size:14px; margin-bottom:10px; color:#88a7b7;">${objective}</p>
                 ${missionsHtml}
-                ${todayJournalHtml}
-                <hr style="border: 0; border-top: 1px solid #2a5268; margin: 10px 0;">
-                <p>Habitudes : <strong>${completedHabits} / ${totalHabits}</strong></p>
-                <button id="btn-dash-plan" style="margin-top:10px; width:100%; background:#00f2fe; color:#0f2027;">Aller au Planning</button>
             </div>
             
+            <div class="stats" style="border-left: 5px solid #2a5268; margin-top: 15px;">
+                <h3>🤖 Le Coach IA</h3>
+                <p style="color: #88a7b7; font-size:12px;"><em>Analyse de ta progression par rapport aux objectifs de la semaine :</em></p>
+                ${insightsHtml || '<p>Continue sur cette lancée, tu es sur la bonne voie par rapport à tes missions !</p>'}
+            </div>
+
+            <div class="stats" style="border-left: 5px solid #9C27B0; margin-top: 15px;">
+                <h3>🧠 Santé du Learning OS</h3>
+                ${healthHtml || '<p>Analyse en cours...</p>'}
+            </div>
+
             <div class="stats" style="border-left: 5px solid #4CAF50; margin-top: 15px;">
-                <h3>🩺 Santé du Learning OS</h3>
-                <p>Habitudes accomplies : <strong>${completedHabits}/${totalHabits}</strong></p>
-                <p>Compétences actives : <strong>${activeSkills}</strong></p>
-                <p>Compétences oubliées : <strong>${forgottenSkills}</strong></p>
-                <p>Objectifs : <strong>0 en retard</strong></p>
+                <h3>🌞 État du jour</h3>
+                ${todayJournalHtml}
+                <hr style="border: 0; border-top: 1px solid #2a5268; margin: 10px 0;">
+                <p>Habitudes accomplies : <strong>${completedHabits} / ${totalHabits}</strong></p>
+                <button id="btn-dash-plan" style="margin-top:10px; width:100%; background:#00f2fe; color:#0f2027;">Aller au Planning du Jour</button>
             </div>
 
             <div class="stats" style="border-left: 5px solid #00f2fe; margin-top: 15px;">
-                <h3>🧠 Learning Graph (Compétences)</h3>
+                <h3>📊 Learning Graph (Compétences)</h3>
                 ${skillsHtml || '<p>Aucune donnée de compétence pour le moment.</p>'}
-            </div>
-
-            <div class="stats" style="border-left: 5px solid #2a5268; margin-top: 15px;">
-                <h3>🤖 Le Coach</h3>
-                <p style="color: #88a7b7; font-size:12px;"><em>Analyse des 7 derniers jours et de tes journaux :</em></p>
-                ${insightsHtml || '<p>Continue sur cette lancée !</p>'}
             </div>
         `;
         

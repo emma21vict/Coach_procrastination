@@ -1,5 +1,6 @@
 import { AppLogger } from '../utils/AppLogger.js';
 import { StudyRecord } from '../models/StudyRecord.js';
+import { Proof } from '../models/Proof.js';
 
 export class StudyRecordEngine {
     constructor(storageProvider, xpEngine) {
@@ -19,11 +20,27 @@ export class StudyRecordEngine {
             session.id,
             new Date().toLocaleDateString('fr-CA'),
             new Date().toISOString(),
-            session.skillId
+            session.skillIds || session.skillId
         );
-        
         record.finish(new Date().toISOString(), session.expectedDuration, metrics);
         record.xpEarned = xpEarned;
+        
+        if (metrics.proof && metrics.proof.type) {
+            record.proof = {
+                id: `prf_${Date.now()}`,
+                type: metrics.proof.type,
+                title: metrics.proof.title || `Preuve pour ${session.title}`,
+                description: metrics.proof.description || '',
+                url: metrics.proof.url || '',
+                createdAt: new Date().toISOString(),
+                verified: false,
+                metadata: metrics.proof.metadata || {}
+            };
+        } else {
+            record.proof = null;
+        }
+        
+        record.actualDifficulty = metrics.difficulty || session.difficulty;
         
         let history = await this.storage.loadData('study_history') || [];
         history.push(record);

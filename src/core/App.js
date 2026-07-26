@@ -6,13 +6,14 @@ import { GoalEngine } from '../engines/GoalEngine.js';
 import { ReflectionEngine } from '../engines/ReflectionEngine.js';
 
 export class App {
-    constructor(storage, scheduler, xpEngine, studyRecordEngine) {
+    constructor(storage, scheduler, xpEngine, studyRecordEngine, analyticsEngine, coachEngine) {
         this.storage = storage;
         this.scheduler = scheduler;
         this.xpEngine = xpEngine;
         this.studyRecordEngine = studyRecordEngine;
         
-        this.analyticsEngine = new AnalyticsEngine(storage);
+        this.analyticsEngine = analyticsEngine;
+        this.coachEngine = coachEngine;
         this.learningGraphEngine = new LearningGraphEngine(storage);
         this.goalEngine = new GoalEngine(storage);
         this.reflectionEngine = new ReflectionEngine(storage);
@@ -26,6 +27,8 @@ export class App {
             yesterdayJournal: null,
             fullHistory: [],
             analytics: null,
+            systemHealth: null,
+            coachInsights: null,
             learningGraph: null,
             reflections: null,
             monthlyReport: null,
@@ -74,6 +77,9 @@ export class App {
         this.state.fullHistory = await this.studyRecordEngine.getFullHistory();
         
         this.state.analytics = await this.analyticsEngine.generateInsights(localDate);
+        this.state.systemHealth = await this.analyticsEngine.generateHealth();
+        this.state.coachInsights = this.coachEngine.generateInsights(this.state.analytics);
+        
         this.state.learningGraph = await this.learningGraphEngine.evaluateGraph();
         this.state.reflections = await this.reflectionEngine.analyzeJournalTrends();
         this.state.monthlyReport = await this.analyticsEngine.generateMonthlyReport(dToday.getFullYear(), dToday.getMonth());

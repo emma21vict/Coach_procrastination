@@ -1,8 +1,8 @@
 export class StudyRecord {
-    constructor(id, sessionId, date, startTime, skillId) {
+    constructor(id, sessionId, date, startTime, skillIds = []) {
         this.id = id;
         this.sessionId = sessionId;
-        this.skillId = skillId;
+        this.skillIds = Array.isArray(skillIds) ? skillIds : [skillIds];
         this.date = date; // ISO string (YYYY-MM-DD)
         
         // Time & Duration
@@ -23,6 +23,7 @@ export class StudyRecord {
         this.mood = 3;
         this.quality = 3; // 1 to 5
         this.notes = "";
+        this.reflection = "";
         
         // Context
         this.source = "";
@@ -45,6 +46,7 @@ export class StudyRecord {
             this.quality = metrics.quality || 3;
             this.difficulty = metrics.difficulty || 3;
             this.notes = metrics.notes || "";
+            this.reflection = metrics.reflection || "";
             this.source = metrics.source || "";
             this.device = metrics.device || "Desktop";
             this.proof = metrics.proof || null;

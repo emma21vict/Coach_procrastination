@@ -25,10 +25,14 @@ export class PlanningView {
                 const resourceLink = s.resourceLink ? `<br><a href="${s.resourceLink}" target="_blank" style="color: #00f2fe; text-decoration: none; font-size:14px; display:inline-block; margin-top:5px;">🔗 Ouvrir la ressource</a>` : '';
                 
                 const timeHtml = s.startTime ? `<span style="background: #2a5268; padding: 2px 6px; border-radius: 4px; color: white; font-size: 12px; margin-right: 10px;">${s.startTime}</span>` : '';
+                const diffHtml = s.difficulty ? `<span style="margin-left:5px;">${s.difficulty}</span>` : '';
+                const xpHtml = s.xp ? `<span style="color:#ffd700; margin-left:5px; font-size:12px; font-weight:bold;">+${s.xp} XP</span>` : '';
                 
                 html += `<li style="${style}; padding: 15px; margin-bottom: 12px;">
-                    <strong style="cursor: pointer;" class="task-checkbox" data-id="${s.id}">${checkIcon} ${timeHtml}${s.title} <span style="color:#ff9800; font-size:12px;">(${s.skillLabel || ''})</span></strong><br>
-                    <small style="color: #ccc;">⏱ ${s.expectedDuration} min | ⚡ Priorité: ${s.priority}</small>
+                    <strong style="cursor: pointer;" class="task-checkbox" data-id="${s.id}">${checkIcon} ${timeHtml}${s.title} ${diffHtml} ${xpHtml}</strong><br>
+                    <small style="color: #ccc;">⏱ ${s.expectedDuration} min | ⚡ Priorité: ${s.priority || 'Normale'} | <span style="color:#ff9800;">${s.skillLabel || ''}</span></small><br>
+                    ${s.objective ? `<span style="color:#88a7b7; font-size:13px; font-style:italic;">🎯 Objectif : ${s.objective}</span><br>` : ''}
+                    ${s.expectedResult ? `<span style="color:#88a7b7; font-size:13px;">📌 Résultat attendu : ${s.expectedResult}</span>` : ''}
                     ${!isCompleted ? resourceLink : ''}
                 </li>`;
             });

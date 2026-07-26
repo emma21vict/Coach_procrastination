@@ -41,9 +41,13 @@ export class AnalyticsEngine {
         const regularity = activeDays.size; // sur 7 jours
         const avgQuality = qualityCount > 0 ? (qualitySum / qualityCount).toFixed(1) : 0;
         
-        // 3. Insight generation (Règles basiques pour le MVP Coach)
         let insights = [];
         
+        let proofsCount7Days = 0;
+        last7DaysRecords.forEach(r => {
+            if (r.proof && r.proof.type) proofsCount7Days++;
+        });
+
         if (regularity >= 6) {
             insights.push({ type: 'success', text: "Régularité exemplaire (travaillé " + regularity + " jours sur 7). Continue comme ça !" });
         } else if (regularity < 3 && history.length > 3) {
@@ -54,12 +58,14 @@ export class AnalyticsEngine {
             insights.push({ type: 'warning', text: "Tu as beaucoup pratiqué Linux cette semaine, mais l'Anglais a été négligé." });
         }
         
-        if (!skillDistribution['machine_learning']) {
-            insights.push({ type: 'warning', text: "Tu n'as consacré aucun temps au Machine Learning cette semaine." });
+        if (proofsCount7Days === 0 && last7DaysRecords.length > 3) {
+            insights.push({ type: 'warning', text: "Tu n'as fourni aucune preuve (lien, note, capture) lors de tes dernières sessions. N'oublie pas de documenter ton travail pour ton portfolio !" });
+        } else if (proofsCount7Days > 3) {
+            insights.push({ type: 'success', text: "Super ! Tu as documenté " + proofsCount7Days + " preuves cette semaine. Ton portfolio se remplit bien." });
         }
 
         if (insights.length === 0) {
-            insights.push({ type: 'success', text: "Très bon équilibre général dans tes compétences. Les fondamentaux sont solides." });
+            insights.push({ type: 'success', text: "Très bon équilibre général dans tes compétences. N'oublie pas de vérifier tes missions hebdomadaires !" });
         }
 
         AppLogger.info("AnalyticsEngine: Insights générés.");
@@ -108,6 +114,41 @@ export class AnalyticsEngine {
             avgQuality: avgQuality,
             proofsGenerated: proofsCount,
             summary: `En ${month + 1}/${year}, tu as investi ${(totalTimeMinutes / 60).toFixed(1)} heures réparties sur ${daysActive.size} jours. Tu as généré ${proofsCount} preuves tangibles de tes compétences.`
+        };
+    }
+
+    async generateHealth() {
+        const history = await this.storage.loadData('study_history') || [];
+        const userProfile = await this.storage.loadData('user_profile') || { streak: 0 };
+        
+        let activeSkillsCount = 0;
+        let activeDays = new Set();
+        let skillsLastSeen = {};
+
+        history.forEach(r => {
+            if (r.status === 'completed' || r.status === 'partial') {
+                activeDays.add(r.date);
+                if (r.skillIds) {
+                    r.skillIds.forEach(id => {
+                        skillsLastSeen[id] = r.date;
+                    });
+                }
+            }
+        });
+
+        const activeSkills = Object.keys(skillsLastSeen).length;
+        const forgottenSkills = 0; // Placeholder logic for forgotten skills
+        const habitsScore = 0; // Placeholder
+        const lateGoals = 0; // Placeholder
+        const streak = userProfile.streak;
+
+        return {
+            habitsScore,
+            activeSkills,
+            forgottenSkills,
+            lateGoals,
+            streak,
+            learningBalance: "Bon équilibre" // Placeholder
         };
     }
 }

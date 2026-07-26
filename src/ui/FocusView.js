@@ -3,6 +3,8 @@ export class FocusView {
         this.container = document.getElementById(containerId);
         this.app = app;
         this.timerInterval = null;
+        this.currentSessionId = null;
+        this.focusEndTime = null;
     }
     
     render(session) {
@@ -32,7 +34,8 @@ export class FocusView {
             <h2>⏱️ Mode Focus</h2>
             <div class="stats" style="text-align: center;">
                 <h3 style="color: #ff9800; font-size: 20px;">${session.title}</h3>
-                <div style="font-size: 14px; color: #88a7b7; margin-bottom: 15px;">Objectif : ${session.skillLabel || ''}</div>
+                <div style="font-size: 14px; color: #88a7b7; margin-bottom: 5px;">🎯 Objectif : ${session.objective || session.skillLabel || ''}</div>
+                ${session.expectedResult ? `<div style="font-size: 14px; color: #4CAF50; margin-bottom: 15px;">📌 Résultat attendu : ${session.expectedResult}</div>` : ''}
                 <div id="focus-timer-display" style="font-size: 48px; font-weight: bold; color: #00f2fe; text-shadow: 0 0 10px rgba(0,242,254,0.5); margin: 20px 0;">
                     ${session.expectedDuration}:00
                 </div>
@@ -56,11 +59,22 @@ export class FocusView {
                             <option value="GitHub Commit">GitHub Commit</option>
                             <option value="Certificat">Certificat</option>
                             <option value="Projet">Lien de Projet</option>
+                            <option value="Capture">Capture / Photo</option>
                             <option value="Note">Note / Résumé</option>
                         </select>
                         <input type="text" id="f-proof-url" placeholder="URL (optionnel)" style="width:100%; margin-bottom:5px; padding:5px; background:#0f2027; color:white; border:1px solid #2a5268;">
                         <input type="text" id="f-proof-desc" placeholder="Description courte" style="width:100%; padding:5px; background:#0f2027; color:white; border:1px solid #2a5268;">
                     </div>
+                    
+                    <label>Niveau de maîtrise</label>
+                    <select id="f-actual-difficulty" style="width:100%; margin-bottom:10px; padding:5px; background:#0f2027; color:white; border:1px solid #2a5268;">
+                        <option value="🟢" ${session.difficulty === '🟢' ? 'selected' : ''}>🟢 Je maîtrise</option>
+                        <option value="🟡" ${session.difficulty === '🟡' ? 'selected' : ''}>🟡 À revoir</option>
+                        <option value="🔴" ${session.difficulty === '🔴' ? 'selected' : ''}>🔴 Je n'ai pas compris</option>
+                    </select>
+
+                    <label style="display:block; font-weight:bold; margin-bottom:5px;">Commentaire / Réflexion</label>
+                    <textarea id="f-reflection" placeholder="Ex: J'ai compris les boucles mais je dois revoir les listes..." style="width:100%; padding:5px; background:#0f2027; color:white; border:1px solid #2a5268; margin-bottom:10px; height:60px;"></textarea>
 
                     <label>Qualité (1-5)</label><input type="range" id="f-quality" min="1" max="5" value="3" style="width:100%; margin-bottom:10px;">
                     <label>Énergie (1-5)</label><input type="range" id="f-energy" min="1" max="5" value="3" style="width:100%; margin-bottom:10px;">
@@ -77,7 +91,12 @@ export class FocusView {
         const btnConfirm = document.getElementById('btn-confirm-task');
         const timerDisplay = document.getElementById('focus-timer-display');
 
-        let remainingSeconds = session.expectedDuration * 60;
+        if (this.currentSessionId !== session.id || !this.focusEndTime) {
+            this.currentSessionId = session.id;
+            this.focusEndTime = Date.now() + (session.expectedDuration * 60 * 1000);
+        }
+
+        let remainingSeconds = Math.max(0, Math.floor((this.focusEndTime - Date.now()) / 1000));
         
         const updateTimerDisplay = () => {
             const m = Math.floor(remainingSeconds / 60);
@@ -85,12 +104,16 @@ export class FocusView {
             timerDisplay.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         };
 
+        // Initial display update
+        updateTimerDisplay();
+
         this.timerInterval = setInterval(() => {
+            remainingSeconds = Math.max(0, Math.floor((this.focusEndTime - Date.now()) / 1000));
             if (remainingSeconds > 0) {
-                remainingSeconds--;
                 updateTimerDisplay();
             } else {
                 clearInterval(this.timerInterval);
+                updateTimerDisplay();
                 timerDisplay.style.color = '#ff9800';
                 timerDisplay.style.textShadow = '0 0 10px rgba(255,152,0,0.5)';
                 // Auto-show evaluation when time is up
@@ -125,9 +148,16 @@ export class FocusView {
                 const metrics = {
                     status: document.getElementById('f-status').value,
                     proof: proofObj,
+                    difficulty: document.getElementById('f-actual-difficulty').value,
+                    reflection: document.getElementById('f-reflection').value,
                     quality: parseInt(document.getElementById('f-quality').value),
                     energy: parseInt(document.getElementById('f-energy').value)
                 };
+                
+                // Clear state when session is completed
+                this.currentSessionId = null;
+                this.focusEndTime = null;
+
                 this.app.markSessionCompleted(id, metrics);
             });
         }
