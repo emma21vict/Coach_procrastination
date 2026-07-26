@@ -16,10 +16,10 @@ export class Bootstrap {
         try {
             storage = new LocalStorageProvider();
             const savedVersion = await storage.loadData('bootcamp_program_version');
-            if (savedVersion !== "1.4_blocks") {
+            if (savedVersion !== "1.5_semaine1_officielle") {
                 await storage.removeData('bootcamp_program');
-                await storage.saveData('bootcamp_program_version', "1.4_blocks");
-                AppLogger.info("Cache du programme purgé pour passer à la v1.4_blocks officielle !");
+                await storage.saveData('bootcamp_program_version', "1.5_semaine1_officielle");
+                AppLogger.info("Cache du programme purgé pour passer à la v1.5_semaine1_officielle !");
             }
         } catch (e) { AppLogger.error("Erreur Storage: " + e.message); }
         
