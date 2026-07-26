@@ -55,7 +55,7 @@ export class SchedulerEngine {
         
         let todaySessions = program[0].days[0].sessions;
         
-        const startDate = new Date('2026-07-23T12:00:00');
+        const startDate = new Date('2026-07-26T12:00:00');
         const currentObj = new Date(dateStr + 'T12:00:00');
         
         let dayIndex = 0;
@@ -78,7 +78,7 @@ export class SchedulerEngine {
         let currentMinute = 30;
 
         const sessionsForToday = todaySessions.map((s, idx) => {
-            const startTimeStr = `${currentHour.toString().padStart(2, '0')}h${currentMinute.toString().padStart(2, '0')}`;
+            const startTimeStr = s.startTime || `${currentHour.toString().padStart(2, '0')}h${currentMinute.toString().padStart(2, '0')}`;
             
             // Calculer l'heure de la prochaine session (+ durée + 15m pause)
             let totalMinutes = s.expectedDuration + 15;
