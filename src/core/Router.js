@@ -1,5 +1,5 @@
-import { DashboardView } from '../ui/DashboardView.js?v=4';
-import { PlanningView } from '../ui/PlanningView.js?v=6';
+import { DashboardView } from '../ui/DashboardView.js?v=5';
+import { PlanningView } from '../ui/PlanningView.js?v=7';
 import { FocusView } from '../ui/FocusView.js?v=6';
 import { BilanView } from '../ui/BilanView.js?v=3';
 import { JournalView } from '../ui/JournalView.js?v=3';

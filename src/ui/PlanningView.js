@@ -17,7 +17,7 @@ export class PlanningView {
         html += '<button id="btn-launch-focus" style="background:#00f2fe; color:#0f2027; padding:5px 10px; font-size:12px; border-radius:15px; border:none; cursor:pointer;">▶️ Lancer Focus</button>';
         html += '</h3>';
         html += '<ul class="session-list" style="margin-bottom: 20px;">';
-        if (plan && plan.sessions) {
+        if (plan && plan.sessions && plan.sessions.length > 0) {
             plan.sessions.forEach(s => {
                 const isCompleted = s.completed;
                 const style = isCompleted ? 'text-decoration: line-through; opacity: 0.5;' : '';
@@ -42,12 +42,17 @@ export class PlanningView {
                     </div>
                 </li>`;
             });
+        } else {
+            html += `<li style="padding: 20px; text-align: center; background: #0b1a20; border-left: 4px solid #ff9800; border-radius: 6px; color: #a8d8ea; list-style: none;">
+                <strong style="color: #ff9800; font-size: 16px;">⏳ Le Bootcamp officiel commence demain, Lundi 27 juillet !</strong>
+                <p style="margin: 8px 0 0 0; font-size: 14px; color: #e0e0e0;">Aucun cours ou tâche ne t'est assigné pour aujourd'hui (Dimanche 26 juillet). Profite de cette journée pour préparer ton espace de travail, ton compte TryHackMe et te reposer avant le grand lancement demain matin à 05h30 ! 🚀</p>
+            </li>`;
         }
         html += '</ul>';
 
         html += '<h3 style="color: #ff9800; border-bottom: 1px solid #ff9800; padding-bottom: 5px;">🔥 Habitudes du Soir</h3>';
         html += '<ul class="session-list" style="margin-bottom: 20px;">';
-        if (plan && plan.habits) {
+        if (plan && plan.habits && plan.habits.length > 0) {
             plan.habits.forEach(h => {
                 const isCompleted = h.completed;
                 const style = isCompleted ? 'text-decoration: line-through; opacity: 0.5;' : '';
@@ -58,6 +63,8 @@ export class PlanningView {
                     <br><small style="color: #88a7b7;">Objectif : ${h.skillLabel}</small>
                 </li>`;
             });
+        } else {
+            html += `<li style="padding: 10px; color: #88a7b7; list-style: none;">Aucune habitude programmée avant le début du Bootcamp.</li>`;
         }
         html += '</ul>';
 

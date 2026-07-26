@@ -1,10 +1,10 @@
 import { LocalStorageProvider } from '../services/LocalStorageProvider.js';
-import { SchedulerEngine } from '../engines/SchedulerEngine.js?v=6';
+import { SchedulerEngine } from '../engines/SchedulerEngine.js?v=7';
 import { XPEngine } from '../engines/XPEngine.js';
 import { StudyRecordEngine } from '../engines/StudyRecordEngine.js';
 import { AnalyticsEngine } from '../engines/AnalyticsEngine.js';
 import { LearningCoachEngine } from '../engines/LearningCoachEngine.js';
-import { App } from './App.js?v=7';
+import { App } from './App.js?v=8';
 import { AppLogger } from '../utils/AppLogger.js';
 
 export class Bootstrap {

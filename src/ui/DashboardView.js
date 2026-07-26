@@ -97,7 +97,11 @@ export class DashboardView {
                 `;
             });
         } else {
-            todayBlocsHtml = "<p style='color:#88a7b7;'>Aucune séance planifiée pour aujourd'hui.</p>";
+            todayBlocsHtml = `
+            <div style="background:#0b1a20; border-left:4px solid #ff9800; padding:15px; border-radius:6px; margin-bottom:10px;">
+                <strong style="color:#ff9800; font-size:15px;">⏳ Le Bootcamp officiel commence demain, Lundi 27 juillet !</strong>
+                <p style="margin:8px 0 0 0; color:#e0e0e0; font-size:13px;">Aucune séance ni habitude ne t'est assignée pour aujourd'hui (Dimanche 26 juillet). Profite de cette journée pour préparer tes outils, te reposer et être en pleine forme pour le grand départ demain à 05h30 ! 🚀</p>
+            </div>`;
         }
 
         this.container.innerHTML = `
