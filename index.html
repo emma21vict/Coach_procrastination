@@ -29,9 +29,22 @@
             const root = document.getElementById('app-root');
             if(root) root.innerHTML = '<p style="color:red; padding:20px;">Promesse rejetée : ' + e.reason + '</p>';
         });
+        setTimeout(function() {
+            const root = document.getElementById('app-root');
+            if (root && root.innerHTML.includes('Initialisation du noyau')) {
+                root.innerHTML += `
+                <div style="background: #1a0b1c; border: 2px solid #ff9800; padding: 20px; border-radius: 10px; margin: 25px auto; max-width: 480px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                    <h3 style="color: #ff9800; margin-top: 0;">⚠️ Chargement en attente de GitHub Pages</h3>
+                    <p style="color: #e0e0e0; font-size: 14px; line-height: 1.5;">Si l'application reste bloquée sur "Initialisation du noyau", c'est que GitHub Pages est encore en cours de synchronisation ou que votre navigateur a mis en cache un ancien fichier.</p>
+                    <button onclick="localStorage.clear(); window.location.reload(true);" style="background: #00f2fe; color: #0f2027; font-weight: bold; border: none; padding: 12px 24px; border-radius: 20px; cursor: pointer; font-size: 15px; margin-top: 12px; box-shadow: 0 2px 8px rgba(0,242,254,0.4);">
+                        🔄 Purger le cache et recharger
+                    </button>
+                </div>`;
+            }
+        }, 3500);
     </script>
     <script type="module">
-        import { Bootstrap } from './src/core/Bootstrap.js?v=27';
+        import { Bootstrap } from './src/core/Bootstrap.js?v=28';
         
         window.addEventListener('DOMContentLoaded', async () => {
             try {

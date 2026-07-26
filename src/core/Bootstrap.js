@@ -48,7 +48,21 @@ export class Bootstrap {
         }
         
         const app = new App(storage, scheduler, xpEngine, studyRecordEngine, analyticsEngine, coachEngine);
-        await app.start();
+        try {
+            await app.start();
+        } catch (err) {
+            AppLogger.error("Erreur dans app.start(): " + err.message);
+            const root = document.getElementById('app-root');
+            if (root) {
+                root.innerHTML = `<div style="color:red; padding:20px; text-align:center;">
+                    <h3>Erreur de démarrage : ${err.message}</h3>
+                    <button onclick="localStorage.clear(); window.location.reload(true);" style="background:#00f2fe;color:#0f2027;padding:10px 20px;border-radius:15px;border:none;cursor:pointer;margin-top:10px;font-weight:bold;">
+                        🔄 Réinitialiser l'application
+                    </button>
+                </div>`;
+            }
+            throw err;
+        }
         
         AppLogger.info("Bootstrap terminé. Application prête.");
         return app;
