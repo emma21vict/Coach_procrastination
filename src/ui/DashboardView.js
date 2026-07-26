@@ -48,6 +48,35 @@ export class DashboardView {
             `;
         }
 
+        let missionsHtml = "";
+        let theme = "Semaine en cours";
+        let objective = "";
+        
+        if (state.fullProgram && state.fullProgram.length > 0) {
+            const currentWeek = state.fullProgram[0];
+            if (currentWeek) {
+                theme = currentWeek.theme || theme;
+                objective = currentWeek.objective || "";
+                if (currentWeek.missions && currentWeek.missions.length > 0) {
+                    currentWeek.missions.forEach(m => {
+                        missionsHtml += `<p style="margin:5px 0; font-size:13px;"><input type="checkbox" style="margin-right:8px;"> ${m}</p>`;
+                    });
+                }
+            }
+        }
+        if (!missionsHtml) missionsHtml = "<p style='color:#88a7b7;'>Aucune mission définie cette semaine.</p>";
+
+        let todayJournalHtml = "";
+        if (state.currentJournal) {
+            const moodEmojis = ["", "😭", "😟", "😐", "🙂", "🤩"];
+            const energyEmojis = ["", "🔋 (Vide)", "🔋 (Faible)", "🔋 (Moyenne)", "🔋 (Bonne)", "🔋 (Pleine)"];
+            todayJournalHtml = `
+                <hr style="border: 0; border-top: 1px solid #2a5268; margin: 10px 0;">
+                <p>Humeur : ${moodEmojis[state.currentJournal.mood] || 'Non renseigné'}</p>
+                <p>Énergie : ${energyEmojis[state.currentJournal.energy] || 'Non renseigné'}</p>
+            `;
+        }
+
         this.container.innerHTML = `
             <h2>🏠 Poste de Pilotage</h2>
             
