@@ -1,6 +1,6 @@
 import { AppLogger } from '../utils/AppLogger.js';
 import { Habit } from '../models/Habit.js';
-import { DefaultBootcampProgram } from '../data/BootcampProgram.js?v=5';
+import { DefaultBootcampProgram } from '../data/BootcampProgram.js?v=6';
 
 export class SchedulerEngine {
     constructor(storageProvider) {
@@ -9,16 +9,16 @@ export class SchedulerEngine {
     
     async getFullProgram() {
         let program = await this.storage.loadData('bootcamp_program');
-        const currentVersion = "1.7_semaine3_officielle";
+        const currentVersion = "1.8_bootcamp_complet_officiel";
         const savedVersion = await this.storage.loadData('bootcamp_program_version');
         
-        // MIGRATION / UPGRADE : Si la version en cache n'est pas la version 1.7_semaine3_officielle ou s'il manque les blocs sur les séances, on remplace par le nouveau programme officiel !
+        // MIGRATION / UPGRADE : Si la version en cache n'est pas la version 1.8_bootcamp_complet_officiel ou s'il manque les blocs sur les séances, on remplace par le nouveau programme officiel !
         const hasBlocks = program && Array.isArray(program) && program.length === 4 && program[0] && program[0].days && program[0].days[0] && program[0].days[0].sessions && program[0].days[0].sessions[0] && program[0].days[0].sessions[0].block;
         if (!program || !hasBlocks || savedVersion !== currentVersion) {
             program = this.generateDefaultProgram();
             await this.storage.saveData('bootcamp_program', program);
             await this.storage.saveData('bootcamp_program_version', currentVersion);
-            AppLogger.info("Scheduler: Nouveau programme officiel v1.7 Semaine 3 chargé et sauvegardé dans le cache !");
+            AppLogger.info("Scheduler: Programme officiel complet 4 semaines v1.8 chargé et sauvegardé dans le cache !");
         }
         return program;
     }
