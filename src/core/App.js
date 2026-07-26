@@ -1,4 +1,4 @@
-import { Router } from './Router.js?v=4';
+import { Router } from './Router.js?v=5';
 import { AppLogger } from '../utils/AppLogger.js';
 import { AnalyticsEngine } from '../engines/AnalyticsEngine.js?v=3';
 import { LearningGraphEngine } from '../engines/LearningGraphEngine.js';

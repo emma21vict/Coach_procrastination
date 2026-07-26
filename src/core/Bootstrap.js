@@ -1,10 +1,10 @@
 import { LocalStorageProvider } from '../services/LocalStorageProvider.js';
-import { SchedulerEngine } from '../engines/SchedulerEngine.js?v=5';
+import { SchedulerEngine } from '../engines/SchedulerEngine.js?v=6';
 import { XPEngine } from '../engines/XPEngine.js';
 import { StudyRecordEngine } from '../engines/StudyRecordEngine.js';
 import { AnalyticsEngine } from '../engines/AnalyticsEngine.js';
 import { LearningCoachEngine } from '../engines/LearningCoachEngine.js';
-import { App } from './App.js?v=6';
+import { App } from './App.js?v=7';
 import { AppLogger } from '../utils/AppLogger.js';
 
 export class Bootstrap {
@@ -16,10 +16,10 @@ export class Bootstrap {
         try {
             storage = new LocalStorageProvider();
             const savedVersion = await storage.loadData('bootcamp_program_version');
-            if (savedVersion !== "1.8_bootcamp_complet_officiel") {
+            if (savedVersion !== "1.9_bootcamp_dates_officielles_27_juillet") {
                 await storage.removeData('bootcamp_program');
-                await storage.saveData('bootcamp_program_version', "1.8_bootcamp_complet_officiel");
-                AppLogger.info("Cache du programme purgé pour passer au Bootcamp Complet Officiel v1.8 !");
+                await storage.saveData('bootcamp_program_version', "1.9_bootcamp_dates_officielles_27_juillet");
+                AppLogger.info("Cache du programme purgé pour passer au Bootcamp Complet v1.9 (début Lundi 27 juillet) !");
             }
         } catch (e) { AppLogger.error("Erreur Storage: " + e.message); }
         

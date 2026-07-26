@@ -148,8 +148,8 @@ export class ProgramView {
     }
 
     getFormattedDate(week, day) {
-        // Le bootcamp commence le 23 Juillet 2026
-        const startDate = new Date('2026-07-23T12:00:00');
+        // Le bootcamp officiel commence le Lundi 27 Juillet 2026
+        const startDate = new Date('2026-07-27T12:00:00');
         const dayOffset = (week - 1) * 7 + (day - 1);
         startDate.setDate(startDate.getDate() + dayOffset);
         
