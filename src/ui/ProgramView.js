@@ -28,22 +28,21 @@ export class ProgramView {
         };
         
         programData.forEach((weekObj, wIdx) => {
-            html += `
-                const missionsHtml = (weekObj.missions && weekObj.missions.length)
-                    ? `<div style="background:#0b1a20; padding:10px; border-radius:4px; margin-bottom:12px; border: 1px solid rgba(0,242,254,0.3);">
-                        <strong style="color:#ff9800; font-size:13px;">🎯 Missions de la Semaine (Checklist Dimanche) :</strong>
-                        <ul style="margin:6px 0 0 15px; padding:0; font-size:13px; color:#e0e0e0;">
-                            ${weekObj.missions.map(m => `<li style="margin-bottom:4px;">${m}</li>`).join('')}
-                        </ul>
-                       </div>`
-                    : '';
+            const missionsHtml = (weekObj.missions && weekObj.missions.length)
+                ? `<div style="background:#0b1a20; padding:10px; border-radius:4px; margin-bottom:12px; border: 1px solid rgba(0,242,254,0.3);">
+                    <strong style="color:#ff9800; font-size:13px;">🎯 Missions de la Semaine (Checklist Dimanche) :</strong>
+                    <ul style="margin:6px 0 0 15px; padding:0; font-size:13px; color:#e0e0e0;">
+                        ${weekObj.missions.map(m => `<li style="margin-bottom:4px;">${m}</li>`).join('')}
+                    </ul>
+                   </div>`
+                : '';
 
-                html += `
-                <div style="background: #152b36; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #00f2fe;">
-                    <h3 style="margin-bottom: 4px; color:#fff;">Semaine ${weekObj.week} — <span style="color:#00f2fe;">${weekObj.theme || ''}</span></h3>
-                    ${weekObj.objective ? `<p style="font-size:13px; color:#a8d8ea; margin: 0 0 10px 0;"><em>"${weekObj.objective}"</em></p>` : ''}
-                    ${missionsHtml}
-                    <div style="display:flex; flex-direction:column; gap:12px;">
+            html += `
+            <div style="background: #152b36; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #00f2fe;">
+                <h3 style="margin-bottom: 4px; color:#fff;">Semaine ${weekObj.week} — <span style="color:#00f2fe;">${weekObj.theme || ''}</span></h3>
+                ${weekObj.objective ? `<p style="font-size:13px; color:#a8d8ea; margin: 0 0 10px 0;"><em>"${weekObj.objective}"</em></p>` : ''}
+                ${missionsHtml}
+                <div style="display:flex; flex-direction:column; gap:12px;">
             `;
             
             weekObj.days.forEach((dayObj, dIdx) => {
