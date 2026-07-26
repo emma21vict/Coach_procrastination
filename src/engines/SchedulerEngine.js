@@ -9,15 +9,16 @@ export class SchedulerEngine {
     
     async getFullProgram() {
         let program = await this.storage.loadData('bootcamp_program');
+        const currentVersion = "1.4_blocks";
+        const savedVersion = await this.storage.loadData('bootcamp_program_version');
         
-        // MIGRATION : On force le programme de 4 semaines s'il n'est pas complet, ou s'il s'agit de l'ancienne version surchargée (> 5 sessions le jour 1)
-        if (program && (!Array.isArray(program) || program.length !== 4 || program[0].days[0].sessions.length > 5)) {
-            program = null;
-        }
-        
-        if (!program) {
+        // MIGRATION / UPGRADE : Si la version en cache n'est pas la version 1.4_blocks ou s'il manque les blocs sur les séances, on remplace par le nouveau programme officiel !
+        const hasBlocks = program && Array.isArray(program) && program.length === 4 && program[0] && program[0].days && program[0].days[0] && program[0].days[0].sessions && program[0].days[0].sessions[0] && program[0].days[0].sessions[0].block;
+        if (!program || !hasBlocks || savedVersion !== currentVersion) {
             program = this.generateDefaultProgram();
             await this.storage.saveData('bootcamp_program', program);
+            await this.storage.saveData('bootcamp_program_version', currentVersion);
+            AppLogger.info("Scheduler: Nouveau programme officiel v1.4 par Blocs (A, B, C, D) chargé et sauvegardé dans le cache !");
         }
         return program;
     }
