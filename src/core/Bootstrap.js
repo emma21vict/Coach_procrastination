@@ -16,10 +16,10 @@ export class Bootstrap {
         try {
             storage = new LocalStorageProvider();
             const savedVersion = await storage.loadData('bootcamp_program_version');
-            if (savedVersion !== "1.9_bootcamp_dates_officielles_27_juillet") {
+            if (savedVersion !== "2.0_bootcamp_tasks_always_active") {
                 await storage.removeData('bootcamp_program');
-                await storage.saveData('bootcamp_program_version', "1.9_bootcamp_dates_officielles_27_juillet");
-                AppLogger.info("Cache du programme purgé pour passer au Bootcamp Complet v1.9 (début Lundi 27 juillet) !");
+                await storage.saveData('bootcamp_program_version', "2.0_bootcamp_tasks_always_active");
+                AppLogger.info("Cache du programme purgé pour activer les tâches en permanence (v2.0) !");
             }
         } catch (e) { AppLogger.error("Erreur Storage: " + e.message); }
         

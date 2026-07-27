@@ -43,10 +43,7 @@ export class PlanningView {
                 </li>`;
             });
         } else {
-            html += `<li style="padding: 20px; text-align: center; background: #0b1a20; border-left: 4px solid #ff9800; border-radius: 6px; color: #a8d8ea; list-style: none;">
-                <strong style="color: #ff9800; font-size: 16px;">⏳ Le Bootcamp officiel commence demain, Lundi 27 juillet !</strong>
-                <p style="margin: 8px 0 0 0; font-size: 14px; color: #e0e0e0;">Aucun cours ou tâche ne t'est assigné pour aujourd'hui (Dimanche 26 juillet). Profite de cette journée pour préparer ton espace de travail, ton compte TryHackMe et te reposer avant le grand lancement demain matin à 05h30 ! 🚀</p>
-            </li>`;
+            html += `<li style="padding: 15px; color: #88a7b7; list-style: none;">Aucune session programmée pour ce jour.</li>`;
         }
         html += '</ul>';
 
@@ -64,7 +61,7 @@ export class PlanningView {
                 </li>`;
             });
         } else {
-            html += `<li style="padding: 10px; color: #88a7b7; list-style: none;">Aucune habitude programmée avant le début du Bootcamp.</li>`;
+            html += `<li style="padding: 10px; color: #88a7b7; list-style: none;">Aucune habitude programmée pour ce soir.</li>`;
         }
         html += '</ul>';
 

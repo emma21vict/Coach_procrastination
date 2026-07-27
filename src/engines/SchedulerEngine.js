@@ -55,22 +55,21 @@ export class SchedulerEngine {
         const program = await this.getFullProgram();
         
         let todaySessions = [];
-        let activeHabits = [];
+        let activeHabits = mockHabits;
         
         const startDate = new Date('2026-07-27T12:00:00');
         const currentObj = new Date(dateStr + 'T12:00:00');
         
+        let dayIndex = 0;
         if (currentObj >= startDate) {
-            activeHabits = mockHabits;
             const diffTime = currentObj - startDate;
-            let dayIndex = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            // On s'assure de ne pas dépasser le programme de 28 jours (index 27)
-            dayIndex = Math.min(Math.max(0, dayIndex), 27);
-            const weekIndex = Math.floor(dayIndex / 7);
-            const dayOfWeek = dayIndex % 7;
-            if (program[weekIndex] && program[weekIndex].days[dayOfWeek]) {
-                todaySessions = program[weekIndex].days[dayOfWeek].sessions;
-            }
+            dayIndex = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        }
+        dayIndex = Math.min(Math.max(0, dayIndex), 27);
+        const weekIndex = Math.floor(dayIndex / 7);
+        const dayOfWeek = dayIndex % 7;
+        if (program[weekIndex] && program[weekIndex].days[dayOfWeek]) {
+            todaySessions = program[weekIndex].days[dayOfWeek].sessions;
         }
         
         let currentHour = 9;
