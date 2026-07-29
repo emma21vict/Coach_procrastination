@@ -16,10 +16,10 @@ export class Bootstrap {
         try {
             storage = new LocalStorageProvider();
             const savedVersion = await storage.loadData('bootcamp_program_version');
-            if (savedVersion !== "2.1_certifying_sources_and_autoclose_tabs") {
+            if (savedVersion !== "2.2_tryhackme_osint_module") {
                 await storage.removeData('bootcamp_program');
-                await storage.saveData('bootcamp_program_version', "2.1_certifying_sources_and_autoclose_tabs");
-                AppLogger.info("Cache du programme purgé (v2.1 : sources certifiantes + fermeture auto des onglets) !");
+                await storage.saveData('bootcamp_program_version', "2.2_tryhackme_osint_module");
+                AppLogger.info("Cache du programme purgé (v2.2 : remplacement d'OSINT Framework par TryHackMe OSINT certifiant) !");
             }
         } catch (e) { AppLogger.error("Erreur Storage: " + e.message); }
         
