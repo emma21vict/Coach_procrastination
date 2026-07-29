@@ -91,6 +91,18 @@ export class FocusView {
                 <div id="focus-timer-display" style="font-size: 48px; font-weight: bold; color: #00f2fe; text-shadow: 0 0 10px rgba(0,242,254,0.5); margin: 20px 0;">
                     ${session.expectedDuration}:00
                 </div>
+
+                <div id="focus-warning-banner" style="display: none; background: #3e2723; border: 1px solid #ff9800; color: #ffbc00; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 14px;">
+                    ⏳ <strong>Attention : Plus que 15 minutes !</strong><br>
+                    Veux-tu prolonger ton temps avant la fermeture automatique du cours ?
+                </div>
+
+                <div id="focus-time-extensions" style="margin-bottom: 20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn-extend-time" data-min="10" style="background: #152b36; color: #00f2fe; border: 1px solid #00f2fe; padding: 6px 14px; border-radius: 15px; cursor: pointer; font-size: 13px; font-weight: bold;">⏱️ +10 min</button>
+                    <button class="btn-extend-time" data-min="15" style="background: #152b36; color: #ff9800; border: 1px solid #ff9800; padding: 6px 14px; border-radius: 15px; cursor: pointer; font-size: 13px; font-weight: bold;">⏱️ +15 min</button>
+                    <button class="btn-extend-time" data-min="30" style="background: #152b36; color: #4CAF50; border: 1px solid #4CAF50; padding: 6px 14px; border-radius: 15px; cursor: pointer; font-size: 13px; font-weight: bold;">⏱️ +30 min</button>
+                </div>
+
                 ${session.resourceLink ? `<button id="btn-open-resource" data-url="${session.resourceLink}" style="background: #2a5268; color: #00f2fe; border: 1px solid #00f2fe; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 14px; margin-bottom: 20px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,242,254,0.2);">🔗 Ouvrir le cours certifiant (Fermeture automatique à la fin du chrono)</button>` : ''}
                 
                 <div id="focus-evaluation" style="display: none; text-align: left; margin-top: 20px; border-top: 1px solid #2a5268; padding-top: 15px;">
@@ -149,6 +161,31 @@ export class FocusView {
             });
         }
 
+        const extendButtons = document.querySelectorAll('.btn-extend-time');
+        extendButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const addMin = parseInt(e.currentTarget.getAttribute('data-min'), 10);
+                this.focusEndTime += addMin * 60 * 1000;
+                remainingSeconds = Math.max(0, Math.floor((this.focusEndTime - Date.now()) / 1000));
+                updateTimerDisplay();
+                
+                const banner = document.getElementById('focus-warning-banner');
+                if (banner) banner.style.display = 'none';
+                
+                if (remainingSeconds > 900) {
+                    this.hasWarned15Min = false;
+                }
+                
+                const originalText = btn.textContent;
+                btn.textContent = `✔ +${addMin}m ajoutées !`;
+                btn.style.background = "#2a5268";
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = "#152b36";
+                }, 1500);
+            });
+        });
+
         const btnPreComplete = document.getElementById('btn-pre-complete-task');
         const evalSection = document.getElementById('focus-evaluation');
         const btnConfirm = document.getElementById('btn-confirm-task');
@@ -157,6 +194,7 @@ export class FocusView {
         if (this.currentSessionId !== session.id || !this.focusEndTime) {
             this.currentSessionId = session.id;
             this.focusEndTime = Date.now() + (session.expectedDuration * 60 * 1000);
+            this.hasWarned15Min = false;
         }
 
         let remainingSeconds = Math.max(0, Math.floor((this.focusEndTime - Date.now()) / 1000));
@@ -174,6 +212,37 @@ export class FocusView {
             remainingSeconds = Math.max(0, Math.floor((this.focusEndTime - Date.now()) / 1000));
             if (remainingSeconds > 0) {
                 updateTimerDisplay();
+                if (remainingSeconds <= 900 && remainingSeconds > 895 && !this.hasWarned15Min) {
+                    this.hasWarned15Min = true;
+                    const banner = document.getElementById('focus-warning-banner');
+                    if (banner) banner.style.display = 'block';
+
+                    try {
+                        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                        const playDing = (freq, duration) => {
+                            const osc = ctx.createOscillator();
+                            const gain = ctx.createGain();
+                            osc.type = 'triangle';
+                            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                            gain.gain.setValueAtTime(0.25, ctx.currentTime);
+                            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+                            osc.connect(gain);
+                            gain.connect(ctx.destination);
+                            osc.start();
+                            osc.stop(ctx.currentTime + duration);
+                        };
+                        playDing(660, 0.6); // E5 doux
+                    } catch(e) {}
+
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        try {
+                            new Notification("⏳ Plus que 15 minutes : " + session.title, {
+                                body: "Il reste 15 minutes au chrono ! Tu peux prolonger ton temps (+10m, +15m, +30m) si tu as besoin d'avancer encore.",
+                                icon: "https://emma21vict.github.io/Coach_procrastination/favicon.ico"
+                            });
+                        } catch(e) {}
+                    }
+                }
             } else {
                 clearInterval(this.timerInterval);
                 updateTimerDisplay();
