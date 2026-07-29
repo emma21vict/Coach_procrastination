@@ -16,10 +16,10 @@ export class Bootstrap {
         try {
             storage = new LocalStorageProvider();
             const savedVersion = await storage.loadData('bootcamp_program_version');
-            if (savedVersion !== "2.0_bootcamp_tasks_always_active") {
+            if (savedVersion !== "2.1_certifying_sources_and_autoclose_tabs") {
                 await storage.removeData('bootcamp_program');
-                await storage.saveData('bootcamp_program_version', "2.0_bootcamp_tasks_always_active");
-                AppLogger.info("Cache du programme purgé pour activer les tâches en permanence (v2.0) !");
+                await storage.saveData('bootcamp_program_version', "2.1_certifying_sources_and_autoclose_tabs");
+                AppLogger.info("Cache du programme purgé (v2.1 : sources certifiantes + fermeture auto des onglets) !");
             }
         } catch (e) { AppLogger.error("Erreur Storage: " + e.message); }
         

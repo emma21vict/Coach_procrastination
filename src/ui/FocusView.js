@@ -5,6 +5,58 @@ export class FocusView {
         this.timerInterval = null;
         this.currentSessionId = null;
         this.focusEndTime = null;
+        this.openedResourceWindow = null;
+    }
+
+    triggerTimeUpAlert(sessionTitle) {
+        // 1. Fermer l'onglet externe du cours s'il a été ouvert par le chrono
+        try {
+            if (this.openedResourceWindow && !this.openedResourceWindow.closed) {
+                this.openedResourceWindow.close();
+                console.log("Onglet de ressource fermé automatiquement par la fin du chrono.");
+            }
+        } catch(e) {
+            console.warn("Fermeture onglet externe : " + e.message);
+        }
+
+        // 2. Ramener le focus sur l'application
+        try { window.focus(); } catch(e) {}
+
+        // 3. Alerte sonore (Carillon de fin de session via AudioContext)
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const playBeep = (freq, startTime, duration) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime + startTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + startTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime + startTime);
+                osc.stop(ctx.currentTime + startTime + duration);
+            };
+            playBeep(880, 0, 0.3);      // A5
+            playBeep(880, 0.4, 0.3);    // A5
+            playBeep(1320, 0.8, 0.6);   // E6
+        } catch(e) {
+            console.warn("Audio non supporté : " + e.message);
+        }
+
+        // 4. Notification native Bureau
+        if ('Notification' in window && Notification.permission === 'granted') {
+            try {
+                const n = new Notification("⏰ Temps écoulé : " + sessionTitle, {
+                    body: "Ton chrono est terminé ! Le site du cours a été fermé. Reviens sur Coach Procrastination pour valider ton XP !",
+                    icon: "https://emma21vict.github.io/Coach_procrastination/favicon.ico"
+                });
+                n.onclick = () => {
+                    window.focus();
+                    n.close();
+                };
+            } catch(e) {}
+        }
     }
     
     render(session) {
@@ -39,7 +91,7 @@ export class FocusView {
                 <div id="focus-timer-display" style="font-size: 48px; font-weight: bold; color: #00f2fe; text-shadow: 0 0 10px rgba(0,242,254,0.5); margin: 20px 0;">
                     ${session.expectedDuration}:00
                 </div>
-                ${session.resourceLink ? `<a href="${session.resourceLink}" target="_blank" style="color: #00f2fe; display: block; margin-bottom: 20px;">🔗 Ouvrir la ressource</a>` : ''}
+                ${session.resourceLink ? `<button id="btn-open-resource" data-url="${session.resourceLink}" style="background: #2a5268; color: #00f2fe; border: 1px solid #00f2fe; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 14px; margin-bottom: 20px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,242,254,0.2);">🔗 Ouvrir le cours certifiant (Fermeture automatique à la fin du chrono)</button>` : ''}
                 
                 <div id="focus-evaluation" style="display: none; text-align: left; margin-top: 20px; border-top: 1px solid #2a5268; padding-top: 15px;">
                     <p style="margin-bottom: 10px; color:#88a7b7;">Bilan de la tâche :</p>
@@ -86,6 +138,17 @@ export class FocusView {
             </div>
         `;
         
+        const btnOpenResource = document.getElementById('btn-open-resource');
+        if (btnOpenResource) {
+            btnOpenResource.addEventListener('click', (e) => {
+                const url = e.currentTarget.getAttribute('data-url');
+                this.openedResourceWindow = window.open(url, '_blank');
+                if ('Notification' in window && Notification.permission !== 'granted') {
+                    try { Notification.requestPermission(); } catch(err) {}
+                }
+            });
+        }
+
         const btnPreComplete = document.getElementById('btn-pre-complete-task');
         const evalSection = document.getElementById('focus-evaluation');
         const btnConfirm = document.getElementById('btn-confirm-task');
@@ -116,6 +179,7 @@ export class FocusView {
                 updateTimerDisplay();
                 timerDisplay.style.color = '#ff9800';
                 timerDisplay.style.textShadow = '0 0 10px rgba(255,152,0,0.5)';
+                this.triggerTimeUpAlert(session.title);
                 // Auto-show evaluation when time is up
                 if (btnPreComplete && evalSection.style.display === 'none') {
                     btnPreComplete.click();
