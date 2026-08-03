@@ -16,10 +16,10 @@ export class Bootstrap {
         try {
             storage = new LocalStorageProvider();
             const savedVersion = await storage.loadData('bootcamp_program_version');
-            if (savedVersion !== "2.3_reset_bootcamp_start_4_august") {
+            if (savedVersion !== "2.4_agenda_matin_forcen_20h") {
                 await storage.removeData('bootcamp_program');
-                await storage.saveData('bootcamp_program_version', "2.3_reset_bootcamp_start_4_august");
-                AppLogger.info("Cache du programme purgé (v2.3 : Reset du calendrier avec départ le Mardi 4 août) !");
+                await storage.saveData('bootcamp_program_version', "2.4_agenda_matin_forcen_20h");
+                AppLogger.info("Cache du programme purgé (v2.4 : 10m Agenda le matin + Force-N tous les soirs de 20h à 21h) !");
             }
         } catch (e) { AppLogger.error("Erreur Storage: " + e.message); }
         
