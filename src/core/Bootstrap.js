@@ -16,10 +16,10 @@ export class Bootstrap {
         try {
             storage = new LocalStorageProvider();
             const savedVersion = await storage.loadData('bootcamp_program_version');
-            if (savedVersion !== "2.2_tryhackme_osint_module") {
+            if (savedVersion !== "2.3_reset_bootcamp_start_4_august") {
                 await storage.removeData('bootcamp_program');
-                await storage.saveData('bootcamp_program_version', "2.2_tryhackme_osint_module");
-                AppLogger.info("Cache du programme purgé (v2.2 : remplacement d'OSINT Framework par TryHackMe OSINT certifiant) !");
+                await storage.saveData('bootcamp_program_version', "2.3_reset_bootcamp_start_4_august");
+                AppLogger.info("Cache du programme purgé (v2.3 : Reset du calendrier avec départ le Mardi 4 août) !");
             }
         } catch (e) { AppLogger.error("Erreur Storage: " + e.message); }
         

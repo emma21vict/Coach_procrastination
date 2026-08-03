@@ -1,7 +1,7 @@
 export const DefaultBootcampProgram = [
     {
         week: 1,
-        theme: "Les Fondations (27 juillet → 2 août)",
+        theme: "Les Fondations (4 août → 10 août)",
         objective: "Construire les bases indispensables en anglais, cybersécurité, Python, Excel et IA. Objectif : poser des bases solides dans chaque domaine tout en respectant les sessions Force-N.",
         missions: [
             "🇬🇧 Finir au moins 5 modules sur Busuu et réaliser 3 heures de shadowing.",
@@ -85,7 +85,7 @@ export const DefaultBootcampProgram = [
     },
     {
         week: 2,
-        theme: "Consolidation et pratique (3 août → 9 août)",
+        theme: "Consolidation et pratique (11 août → 17 août)",
         objective: "Passer du mode 'je découvre' au mode 'je pratique'. Objectif : consolider et automatiser les bases, moins regarder les cours, faire davantage d'exercices et de mini-projets.",
         missions: [
             "✅ 5 nouveaux modules Busuu terminés.",
@@ -170,7 +170,7 @@ export const DefaultBootcampProgram = [
     },
     {
         week: 3,
-        theme: "Passage à l'autonomie (10 août → 16 août)",
+        theme: "Passage à l'autonomie (18 août → 24 août)",
         objective: "Penser comme une future ingénieure en IA : comprendre un projet Python, manipuler un dataset complet, entraîner un modèle de ML, être autonome sur Linux/TryHackMe, créer un dashboard Excel complet. Lancement des Certificats Force-N.",
         missions: [
             "🇬🇧 6 modules Busuu supplémentaires, 4h de shadowing et 3 conversations IA.",
@@ -252,7 +252,7 @@ export const DefaultBootcampProgram = [
     },
     {
         week: 4,
-        theme: "Validation & Construction (17 août → 23 août)",
+        theme: "Validation & Construction (25 août → 31 août)",
         objective: "Mettre en pratique tout ce que tu as appris (70% pratique, 30% théorie). Objectif : projets, preuves et vision claire de tes compétences. Boucle Planifier → Étudier → Prouver → Analyser → Ajuster.",
         missions: [
             "🇬🇧 Environ 20 modules Busuu terminés et >12h de shadowing cumulées.",

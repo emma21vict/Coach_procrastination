@@ -57,7 +57,7 @@ export class SchedulerEngine {
         let todaySessions = [];
         let activeHabits = mockHabits;
         
-        const startDate = new Date('2026-07-27T12:00:00');
+        const startDate = new Date('2026-08-04T12:00:00');
         const currentObj = new Date(dateStr + 'T12:00:00');
         
         let dayIndex = 0;
