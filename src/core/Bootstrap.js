@@ -1,5 +1,5 @@
 import { LocalStorageProvider } from '../services/LocalStorageProvider.js';
-import { SchedulerEngine } from '../engines/SchedulerEngine.js?v=7';
+import { SchedulerEngine } from '../engines/SchedulerEngine.js?v=8';
 import { XPEngine } from '../engines/XPEngine.js';
 import { StudyRecordEngine } from '../engines/StudyRecordEngine.js';
 import { AnalyticsEngine } from '../engines/AnalyticsEngine.js';
@@ -16,10 +16,10 @@ export class Bootstrap {
         try {
             storage = new LocalStorageProvider();
             const savedVersion = await storage.loadData('bootcamp_program_version');
-            if (savedVersion !== "2.4_agenda_matin_forcen_20h") {
+            if (savedVersion !== "2.5_bootcamp_dates_officielles_4_aout") {
                 await storage.removeData('bootcamp_program');
-                await storage.saveData('bootcamp_program_version', "2.4_agenda_matin_forcen_20h");
-                AppLogger.info("Cache du programme purgé (v2.4 : 10m Agenda le matin + Force-N tous les soirs de 20h à 21h) !");
+                await storage.saveData('bootcamp_program_version', "2.5_bootcamp_dates_officielles_4_aout");
+                AppLogger.info("Cache du programme purgé (v2.5 : Calendrier officiel synchronisé sur le 4 août) !");
             }
         } catch (e) { AppLogger.error("Erreur Storage: " + e.message); }
         
