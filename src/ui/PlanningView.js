@@ -12,9 +12,12 @@ export class PlanningView {
         }
         let html = `<h2 style="text-transform: capitalize;">📅 Planning <span style="color:#00f2fe;">${dateHtml}</span></h2>`;
         
-        html += '<h3 style="color: #00f2fe; border-bottom: 1px solid #00f2fe; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">';
+        html += '<h3 style="color: #00f2fe; border-bottom: 1px solid #00f2fe; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">';
         html += '<span>🎯 Sessions du Bootcamp</span>';
-        html += '<button id="btn-launch-focus" style="background:#00f2fe; color:#0f2027; padding:5px 10px; font-size:12px; border-radius:15px; border:none; cursor:pointer;">▶️ Lancer Focus</button>';
+        html += '<div style="display: flex; gap: 8px; align-items: center;">';
+        html += '<a href="https://mail.google.com/" target="_blank" style="background:#ea4335; color:white; padding:5px 10px; font-size:12px; border-radius:15px; text-decoration:none; font-weight:bold; box-shadow: 0 2px 5px rgba(234,67,53,0.3);">📧 Gmail</a>';
+        html += '<button id="btn-launch-focus" style="background:#00f2fe; color:#0f2027; padding:5px 10px; font-size:12px; border-radius:15px; border:none; cursor:pointer; font-weight:bold;">▶️ Lancer Focus</button>';
+        html += '</div>';
         html += '</h3>';
         html += '<ul class="session-list" style="margin-bottom: 20px;">';
         if (plan && plan.sessions && plan.sessions.length > 0) {
@@ -22,7 +25,8 @@ export class PlanningView {
                 const isCompleted = s.completed;
                 const style = isCompleted ? 'text-decoration: line-through; opacity: 0.5;' : '';
                 const checkIcon = isCompleted ? '✅' : '⬜';
-                const resourceLink = s.resourceLink ? `<br><a href="${s.resourceLink}" target="_blank" style="color: #00f2fe; text-decoration: none; font-size:14px; display:inline-block; margin-top:5px;">🔗 Ouvrir la ressource</a>` : '';
+                const linkLabel = (s.resourceLink && s.resourceLink.includes('mail.google.com')) ? '📧 Ouvrir Gmail / Agenda' : '🔗 Ouvrir la ressource';
+                const resourceLink = s.resourceLink ? `<br><a href="${s.resourceLink}" target="_blank" style="color: #00f2fe; text-decoration: none; font-size:14px; display:inline-block; margin-top:5px; font-weight:bold;">${linkLabel}</a>` : '';
                 
                 const timeHtml = s.startTime ? `<span style="background: #2a5268; padding: 2px 6px; border-radius: 4px; color: white; font-size: 12px; margin-right: 10px;">${s.startTime}</span>` : '';
                 const diffHtml = s.difficulty ? `<span style="margin-left:5px;">${s.difficulty}</span>` : '';

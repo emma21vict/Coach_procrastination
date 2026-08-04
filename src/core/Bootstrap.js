@@ -16,10 +16,10 @@ export class Bootstrap {
         try {
             storage = new LocalStorageProvider();
             const savedVersion = await storage.loadData('bootcamp_program_version');
-            if (savedVersion !== "2.5_bootcamp_dates_officielles_4_aout") {
+            if (savedVersion !== "2.6_bootcamp_gmail_agenda_links") {
                 await storage.removeData('bootcamp_program');
-                await storage.saveData('bootcamp_program_version', "2.5_bootcamp_dates_officielles_4_aout");
-                AppLogger.info("Cache du programme purgé (v2.5 : Calendrier officiel synchronisé sur le 4 août) !");
+                await storage.saveData('bootcamp_program_version', "2.6_bootcamp_gmail_agenda_links");
+                AppLogger.info("Cache du programme purgé (v2.6 : Liens Gmail intégrés) !");
             }
         } catch (e) { AppLogger.error("Erreur Storage: " + e.message); }
         

@@ -27,7 +27,8 @@ export class CoachView {
                 <p><strong>Objectif du jour :</strong> Terminer tes ${total} tâches.</p>
                 <p><strong>Recommandations :</strong> ${recommendation}</p>
                 
-                <button id="btn-start-plan" style="margin-top:15px; width:100%; background:#00f2fe; color:#0f2027;">Voir mon programme</button>
+                <button id="btn-start-plan" style="margin-top:15px; width:100%; background:#00f2fe; color:#0f2027; font-weight:bold; border:none; padding:12px; border-radius:20px; cursor:pointer;">Voir mon programme</button>
+                <a href="https://mail.google.com/" target="_blank" style="display:block; margin-top:10px; width:100%; background:#ea4335; color:#fff; font-weight:bold; text-align:center; padding:12px; border-radius:20px; text-decoration:none; box-shadow: 0 2px 8px rgba(234,67,53,0.3); box-sizing: border-box;">📧 Ouvrir mon Gmail (Agenda & Mails)</a>
             </div>
             
             <div class="stats" style="margin-top: 15px;">

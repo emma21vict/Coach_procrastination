@@ -9,16 +9,16 @@ export class SchedulerEngine {
     
     async getFullProgram() {
         let program = await this.storage.loadData('bootcamp_program');
-        const currentVersion = "2.5_bootcamp_dates_officielles_4_aout";
+        const currentVersion = "2.6_bootcamp_gmail_agenda_links";
         const savedVersion = await this.storage.loadData('bootcamp_program_version');
         
-        // MIGRATION / UPGRADE : Si la version en cache n'est pas la version 2.5_bootcamp_dates_officielles_4_aout ou s'il manque les blocs sur les séances, on remplace par le nouveau programme officiel !
+        // MIGRATION / UPGRADE : Si la version en cache n'est pas la version 2.6_bootcamp_gmail_agenda_links ou s'il manque les blocs sur les séances, on remplace par le nouveau programme officiel !
         const hasBlocks = program && Array.isArray(program) && program.length === 4 && program[0] && program[0].days && program[0].days[0] && program[0].days[0].sessions && program[0].days[0].sessions[0] && program[0].days[0].sessions[0].block;
         if (!program || !hasBlocks || savedVersion !== currentVersion) {
             program = this.generateDefaultProgram();
             await this.storage.saveData('bootcamp_program', program);
             await this.storage.saveData('bootcamp_program_version', currentVersion);
-            AppLogger.info("Scheduler: Programme officiel complet 4 semaines v2.5 (dates officielles du Mardi 4 août) chargé dans le cache !");
+            AppLogger.info("Scheduler: Programme officiel complet 4 semaines v2.6 (dates officielles + liens Gmail) chargé dans le cache !");
         }
         return program;
     }
