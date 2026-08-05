@@ -1,10 +1,10 @@
 import { LocalStorageProvider } from '../services/LocalStorageProvider.js';
-import { SchedulerEngine } from '../engines/SchedulerEngine.js?v=8';
+import { SchedulerEngine } from '../engines/SchedulerEngine.js?v=11';
 import { XPEngine } from '../engines/XPEngine.js';
 import { StudyRecordEngine } from '../engines/StudyRecordEngine.js';
 import { AnalyticsEngine } from '../engines/AnalyticsEngine.js';
 import { LearningCoachEngine } from '../engines/LearningCoachEngine.js';
-import { App } from './App.js?v=9';
+import { App } from './App.js?v=10';
 import { AppLogger } from '../utils/AppLogger.js';
 
 export class Bootstrap {
@@ -16,10 +16,10 @@ export class Bootstrap {
         try {
             storage = new LocalStorageProvider();
             const savedVersion = await storage.loadData('bootcamp_program_version');
-            if (savedVersion !== "2.6_bootcamp_gmail_agenda_links") {
+            if (savedVersion !== "2.8_eloquence_no_ted") {
                 await storage.removeData('bootcamp_program');
-                await storage.saveData('bootcamp_program_version', "2.6_bootcamp_gmail_agenda_links");
-                AppLogger.info("Cache du programme purgé (v2.6 : Liens Gmail intégrés) !");
+                await storage.saveData('bootcamp_program_version', "2.8_eloquence_no_ted");
+                AppLogger.info("Cache du programme purgé (v2.8 : TED complètement remplacé par Storytelling en français) !");
             }
         } catch (e) { AppLogger.error("Erreur Storage: " + e.message); }
         

@@ -116,18 +116,32 @@ export class FocusView {
                         <option value="cancelled">❌ Annulée</option>
                     </select>
 
-                    <div style="background: #152b36; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        <label style="display:block; font-weight:bold; margin-bottom:5px;">Preuve (Proof)</label>
-                        <select id="f-proof-type" style="width:100%; margin-bottom:5px; padding:5px; background:#0f2027; color:white; border:1px solid #2a5268;">
-                            <option value="">-- Aucune --</option>
+                    <div style="background: #152b36; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #2a5268;">
+                        <label style="display:block; font-weight:bold; margin-bottom:6px; color:#00f2fe;">📝 Preuve (Proof) & Capture d'écran</label>
+                        <select id="f-proof-type" style="width:100%; margin-bottom:8px; padding:8px; background:#0f2027; color:white; border:1px solid #2a5268; border-radius:5px;">
+                            <option value="">-- Aucune preuve --</option>
+                            <option value="Capture">📸 Capture / Photo d'écran (Recommandé)</option>
                             <option value="GitHub Commit">GitHub Commit</option>
-                            <option value="Certificat">Certificat</option>
+                            <option value="Certificat">Certificat / Badge</option>
                             <option value="Projet">Lien de Projet</option>
-                            <option value="Capture">Capture / Photo</option>
                             <option value="Note">Note / Résumé</option>
                         </select>
-                        <input type="text" id="f-proof-url" placeholder="URL (optionnel)" style="width:100%; margin-bottom:5px; padding:5px; background:#0f2027; color:white; border:1px solid #2a5268;">
-                        <input type="text" id="f-proof-desc" placeholder="Description courte" style="width:100%; padding:5px; background:#0f2027; color:white; border:1px solid #2a5268;">
+                        <input type="text" id="f-proof-url" placeholder="URL du lien ou projet (optionnel)" style="width:100%; margin-bottom:8px; padding:8px; background:#0f2027; color:white; border:1px solid #2a5268; border-radius:5px;">
+                        <input type="text" id="f-proof-desc" placeholder="Description courte (ex: Exercice Python terminé)" style="width:100%; margin-bottom:8px; padding:8px; background:#0f2027; color:white; border:1px solid #2a5268; border-radius:5px;">
+                        
+                        <!-- BOUTON CLAIR POUR UPLOADER UNE CAPTURE / PHOTO -->
+                        <div id="capture-upload-zone" style="padding:12px; border:2px dashed #00f2fe; border-radius:8px; text-align:center; background:#0b191e; cursor:pointer; margin-top:5px;">
+                            <label for="f-proof-file" style="cursor:pointer; display:block; color:#00f2fe; font-weight:bold; font-size:13px;">
+                                📸 Cliquer ici pour joindre une Capture d'écran ou Photo
+                            </label>
+                            <p style="margin:4px 0 0 0; color:#88a7b7; font-size:11px;">PNG, JPG, WEBP — Votre photo sera enregistrée dans vos preuves</p>
+                            <input type="file" id="f-proof-file" accept="image/*" style="display:none;">
+                            <div id="proof-image-preview" style="margin-top:10px; display:none;">
+                                <img id="proof-img-thumb" src="" alt="Capture jointe" style="max-width:100%; max-height:140px; border-radius:5px; border:1px solid #00f2fe;">
+                                <p style="color:#4CAF50; font-size:12px; margin:4px 0 0 0; font-weight:bold;">✅ Photo capturée avec succès !</p>
+                                <button type="button" id="btn-remove-proof-file" style="background:transparent; color:#ff5252; border:1px solid #ff5252; border-radius:5px; padding:2px 8px; font-size:11px; margin-top:5px; cursor:pointer;">🗑️ Retirer l'image</button>
+                            </div>
+                        </div>
                     </div>
                     
                     <label>Niveau de maîtrise</label>
@@ -263,16 +277,54 @@ export class FocusView {
             });
         }
 
+        // UPLOAD DE CAPTURE D'ÉCRAN / PHOTO
+        this.currentProofImage = null;
+        const proofFileInput = document.getElementById('f-proof-file');
+        const proofPreview = document.getElementById('proof-image-preview');
+        const proofThumb = document.getElementById('proof-img-thumb');
+        const btnRemoveProofFile = document.getElementById('btn-remove-proof-file');
+        const proofTypeSelect = document.getElementById('f-proof-type');
+
+        if (proofFileInput) {
+            proofFileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        this.currentProofImage = event.target.result;
+                        if (proofThumb && proofPreview) {
+                            proofThumb.src = this.currentProofImage;
+                            proofPreview.style.display = 'block';
+                        }
+                        if (proofTypeSelect && !proofTypeSelect.value) {
+                            proofTypeSelect.value = "Capture";
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        if (btnRemoveProofFile) {
+            btnRemoveProofFile.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.currentProofImage = null;
+                if (proofFileInput) proofFileInput.value = "";
+                if (proofPreview) proofPreview.style.display = 'none';
+            });
+        }
+
         if (btnConfirm) {
             btnConfirm.addEventListener('click', (e) => {
                 const id = e.currentTarget.getAttribute('data-id');
                 const proofType = document.getElementById('f-proof-type').value;
                 let proofObj = null;
-                if (proofType) {
+                if (proofType || this.currentProofImage || document.getElementById('f-proof-url').value) {
                     proofObj = {
-                        type: proofType,
+                        type: proofType || "Capture",
                         url: document.getElementById('f-proof-url').value,
                         description: document.getElementById('f-proof-desc').value,
+                        image: this.currentProofImage || null,
                         date: new Date().toLocaleDateString('fr-CA'),
                         source: session.title
                     };

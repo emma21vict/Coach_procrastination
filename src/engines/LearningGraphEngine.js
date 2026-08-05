@@ -6,6 +6,8 @@ export class LearningGraphEngine {
         this.storage = storageProvider;
         this.nodes = {
             'english_speaking': new LearningNode('english_speaking', 'Anglais - Oral'),
+            'eloquence_fr': new LearningNode('eloquence_fr', 'Éloquence (Français)'),
+            'force_n': new LearningNode('force_n', 'Force-N'),
             'cyber_linux': new LearningNode('cyber_linux', 'Linux - Fondamentaux'),
             'machine_learning': new LearningNode('machine_learning', 'Machine Learning')
         };
