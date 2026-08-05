@@ -1,7 +1,7 @@
 import { Router } from './Router.js?v=9';
 import { AppLogger } from '../utils/AppLogger.js';
 import { AnalyticsEngine } from '../engines/AnalyticsEngine.js?v=3';
-import { LearningGraphEngine } from '../engines/LearningGraphEngine.js';
+import { LearningGraphEngine } from '../engines/LearningGraphEngine.js?v=2';
 import { GoalEngine } from '../engines/GoalEngine.js';
 import { ReflectionEngine } from '../engines/ReflectionEngine.js';
 

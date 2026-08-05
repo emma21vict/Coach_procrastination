@@ -16,7 +16,43 @@ export class PortfolioView {
             proofsGenerated: 0
         };
 
-        // Collecter toutes les preuves
+        // Collecter les stats par domaine
+        let domainsHtml = "";
+        if (state.learningGraph) {
+            domainsHtml = `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 25px;">`;
+            state.learningGraph.forEach(node => {
+                // node: { id, title, level, confidence, hours, proofs }
+                const hrs = (node.hours || 0).toFixed(1);
+                const prfCount = node.proofs ? node.proofs.length : 0;
+                let color = "#00f2fe";
+                if (node.id === "cyber") color = "#ff9800";
+                if (node.id === "ia") color = "#4CAF50";
+                if (node.id === "excel") color = "#e1bee7";
+                if (node.id === "force_n") color = "#ff5722";
+                if (node.id === "english_speaking") color = "#29b6f6";
+
+                domainsHtml += `
+                <div style="background: linear-gradient(135deg, #162c38 0%, #0f2027 100%); border: 1px solid ${color}; border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                    <h4 style="color: ${color}; margin: 0 0 10px 0; font-size: 16px; border-bottom: 1px solid #1e3f52; padding-bottom: 8px;">${node.title}</h4>
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
+                        <span style="color:#88a7b7; font-size:13px;">Temps passé :</span>
+                        <strong style="color:#ffffff; font-size:13px;">${hrs} h</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
+                        <span style="color:#88a7b7; font-size:13px;">Preuves validées :</span>
+                        <strong style="color:#ffffff; font-size:13px;">${prfCount}</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 10px;">
+                        <span style="color:#88a7b7; font-size:12px;">Niveau (XP)</span>
+                        <div style="width: 60%; background: #071015; border-radius: 10px; height: 8px; overflow: hidden; border: 1px solid #1e3f52;">
+                            <div style="width: ${Math.min(100, node.level || 0)}%; background: ${color}; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            domainsHtml += `</div>`;
+        }
+
         let totalProofsCount = 0;
         let proofsCardsHtml = "";
         if (state.learningGraph) {
@@ -174,6 +210,12 @@ export class PortfolioView {
                     <span style="background:#18323f; color:#fff; padding:5px 12px; border-radius:15px; font-size:11px;">📊 Excel & Analyse de données</span>
                 </div>
             </div>
+
+            <!-- SECTION DOMAINES / MATIÈRES -->
+            <h3 style="color: #00f2fe; border-left: 4px solid #00f2fe; padding-left: 10px; margin-bottom: 15px; font-size: 18px;">
+                📚 Mes Matières & Domaines d'Étude
+            </h3>
+            ${domainsHtml}
 
             <!-- ONGLES DE NAVIGATION DU PORTFOLIO -->
             <div style="display:flex; gap:10px; margin-bottom:20px; border-bottom:1px solid #2a5268; padding-bottom:10px; flex-wrap:wrap;">
