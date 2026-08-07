@@ -121,24 +121,7 @@ export class DashboardView {
                 ${missionsHtml}
             </div>
             
-            <div class="stats" style="border-left: 5px solid #2a5268; margin-top: 15px;">
-                <h3>🤖 Le Coach IA</h3>
-                <p style="color: #88a7b7; font-size:12px;"><em>Analyse de ta progression par rapport aux objectifs de la semaine :</em></p>
-                ${insightsHtml || '<p>Continue sur cette lancée, tu es sur la bonne voie par rapport à tes missions !</p>'}
-            </div>
 
-            <div class="stats" style="border-left: 5px solid #9C27B0; margin-top: 15px;">
-                <h3>🧠 Santé du Learning OS</h3>
-                ${healthHtml || '<p>Analyse en cours...</p>'}
-            </div>
-
-            <div class="stats" style="border-left: 5px solid #4CAF50; margin-top: 15px;">
-                <h3>🌞 État du jour</h3>
-                ${todayJournalHtml}
-                <hr style="border: 0; border-top: 1px solid #2a5268; margin: 10px 0;">
-                <p>Habitudes accomplies : <strong>${completedHabits} / ${totalHabits}</strong></p>
-                <button id="btn-dash-plan" style="margin-top:10px; width:100%; background:#00f2fe; color:#0f2027;">Aller au Planning du Jour</button>
-            </div>
 
             <div class="stats" style="border-left: 5px solid #00f2fe; margin-top: 15px;">
                 <h3>📊 Learning Graph (Compétences)</h3>
