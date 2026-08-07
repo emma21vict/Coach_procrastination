@@ -3,7 +3,7 @@ import { PlanningView } from '../ui/PlanningView.js?v=8';
 import { FocusView } from '../ui/FocusView.js?v=10';
 import { BilanView } from '../ui/BilanView.js?v=4';
 import { JournalView } from '../ui/JournalView.js?v=5';
-import { PortfolioView } from '../ui/PortfolioView.js?v=4';
+import { PortfolioView } from '../ui/PortfolioView.js?v=5';
 import { ProgramView } from '../ui/ProgramView.js?v=6';
 
 export class Router {
