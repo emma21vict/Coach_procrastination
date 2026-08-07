@@ -331,7 +331,7 @@ export class FocusView {
                 }
                 
                 const metrics = {
-                    status: document.getElementById('f-status').value,
+                    status: 'completed',
                     proof: proofObj,
                     difficulty: document.getElementById('f-actual-difficulty').value,
                     reflection: document.getElementById('f-reflection').value,

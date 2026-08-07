@@ -22,7 +22,7 @@ export class StudyRecordEngine {
             new Date().toISOString(),
             session.skillIds || session.skillId
         );
-        record.finish(new Date().toISOString(), session.expectedDuration, metrics);
+        record.finish(new Date().toISOString(), session.expectedDuration, metrics.status || 'completed', 1.0, metrics);
         record.xpEarned = xpEarned;
         
         if (metrics.proof && metrics.proof.type) {
