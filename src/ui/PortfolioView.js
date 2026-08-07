@@ -291,6 +291,7 @@ export class PortfolioView {
                     secProofs.style.display = 'none';
                     secJournals.style.display = 'block';
                 }
+            });
         });
 
         // Event listeners for Export / Import
