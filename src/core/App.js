@@ -6,7 +6,7 @@ import { GoalEngine } from '../engines/GoalEngine.js';
 import { ReflectionEngine } from '../engines/ReflectionEngine.js';
 
 export class App {
-    constructor(storage, scheduler, xpEngine, studyRecordEngine, analyticsEngine, coachEngine) {
+    constructor(storage, scheduler, xpEngine, studyRecordEngine, analyticsEngine, coachEngine, aiEngine) {
         this.storage = storage;
         this.scheduler = scheduler;
         this.xpEngine = xpEngine;
@@ -14,6 +14,7 @@ export class App {
         
         this.analyticsEngine = analyticsEngine;
         this.coachEngine = coachEngine;
+        this.aiEngine = aiEngine;
         this.learningGraphEngine = new LearningGraphEngine(storage);
         this.goalEngine = new GoalEngine(storage);
         this.reflectionEngine = new ReflectionEngine(storage);

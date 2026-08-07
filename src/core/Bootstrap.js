@@ -4,14 +4,15 @@ import { XPEngine } from '../engines/XPEngine.js';
 import { StudyRecordEngine } from '../engines/StudyRecordEngine.js';
 import { AnalyticsEngine } from '../engines/AnalyticsEngine.js';
 import { LearningCoachEngine } from '../engines/LearningCoachEngine.js';
-import { App } from './App.js?v=12';
+import { AIGeneratorEngine } from '../engines/AIGeneratorEngine.js';
+import { App } from './App.js?v=13';
 import { AppLogger } from '../utils/AppLogger.js';
 
 export class Bootstrap {
     static async init() {
         AppLogger.info("Démarrage du Bootstrap du Learning OS...");
         
-        let storage, scheduler, xpEngine, studyRecordEngine, analyticsEngine, coachEngine;
+        let storage, scheduler, xpEngine, studyRecordEngine, analyticsEngine, coachEngine, aiEngine;
         
         try {
             storage = new IndexedDBProvider();
@@ -62,11 +63,15 @@ export class Bootstrap {
             coachEngine = new LearningCoachEngine();
         } catch (e) { AppLogger.error("Erreur Coach: " + e.message); }
         
-        if (!storage || !scheduler || !xpEngine || !studyRecordEngine || !analyticsEngine || !coachEngine) {
+        try {
+            aiEngine = new AIGeneratorEngine(storage);
+        } catch (e) { AppLogger.error("Erreur AI: " + e.message); }
+        
+        if (!storage || !scheduler || !xpEngine || !studyRecordEngine || !analyticsEngine || !coachEngine || !aiEngine) {
             throw new Error("Impossible d'initialiser les moteurs critiques.");
         }
         
-        const app = new App(storage, scheduler, xpEngine, studyRecordEngine, analyticsEngine, coachEngine);
+        const app = new App(storage, scheduler, xpEngine, studyRecordEngine, analyticsEngine, coachEngine, aiEngine);
         try {
             await app.start();
         } catch (err) {

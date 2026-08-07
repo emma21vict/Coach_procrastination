@@ -55,33 +55,44 @@ export class SchedulerEngine {
     async generateDailyPlan(dateStr) {
         AppLogger.info(`Scheduler: Génération du plan pour la date ${dateStr}`);
         
-        const mockHabits = [
-            new Habit("hab_3", "Journal (Bilan & Objectifs)", "reflection", "Critique", 5, "Soir", 7)
-        ];
+        // Récupérer les habitudes et skills générés par l'IA s'ils existent
+        let activeHabits = await this.storage.loadData('bootcamp_habits');
+        let dbSkills = await this.storage.loadData('bootcamp_skills');
+        let skillsMap = {};
         
-        const skillNames = {
-            'english_speaking': 'Anglais',
-            'eloquence_fr': 'Éloquence (Français)',
-            'force_n': 'Force-N (Certification)',
-            'reading': 'Lecture / Culture',
-            'reflection': 'Bilan & Planification',
-            'cyber_linux': 'Linux',
-            'cyber_network': 'Réseau / Cisco',
-            'ia_pandas': 'Data / Pandas',
-            'data_excel': 'Data / Excel',
-            'dev_git': 'Git / GitHub',
-            'cyber_osint': 'OSINT',
-            'ia_ml': 'Machine Learning',
-            'ia_python': 'Python',
-            'cyber_tryhackme': 'Cybersécurité',
-            'machine_learning': 'Machine Learning'
-        };
-        mockHabits.forEach(h => h.skillLabel = skillNames[h.skillId] || h.skillId);
+        if (dbSkills && Array.isArray(dbSkills)) {
+            dbSkills.forEach(s => skillsMap[s.id] = s.label);
+        } else {
+            skillsMap = {
+                'english_speaking': 'Anglais',
+                'eloquence_fr': 'Éloquence (Français)',
+                'force_n': 'Force-N (Certification)',
+                'reading': 'Lecture / Culture',
+                'reflection': 'Bilan & Planification',
+                'cyber_linux': 'Linux',
+                'cyber_network': 'Réseau / Cisco',
+                'ia_pandas': 'Data / Pandas',
+                'data_excel': 'Data / Excel',
+                'dev_git': 'Git / GitHub',
+                'cyber_osint': 'OSINT',
+                'ia_ml': 'Machine Learning',
+                'ia_python': 'Python',
+                'cyber_tryhackme': 'Cybersécurité',
+                'machine_learning': 'Machine Learning'
+            };
+        }
+
+        if (!activeHabits) {
+            activeHabits = [
+                new Habit("hab_3", "Journal (Bilan & Objectifs)", "reflection", "Critique", 5, "Soir", 7)
+            ];
+        }
+
+        activeHabits.forEach(h => h.skillLabel = skillsMap[h.skillId] || h.skillId);
         
         const program = await this.getFullProgram();
         
         let todaySessions = [];
-        let activeHabits = mockHabits;
         
         let dayIndex = await this.getDayIndex(dateStr);
         const weekIndex = Math.floor(dayIndex / 7);
@@ -114,7 +125,7 @@ export class SchedulerEngine {
                 id: `sess_${dateStr}_${idx}`,
                 title: s.title,
                 skillId: s.skillId,
-                skillLabel: skillNames[s.skillId] || 'Général',
+                skillLabel: skillsMap[s.skillId] || 'Général',
                 expectedDuration: s.expectedDuration,
                 priority: s.priority || "Normale",
                 resourceLink: s.resourceLink,

@@ -5,6 +5,7 @@ import { BilanView } from '../ui/BilanView.js?v=4';
 import { JournalView } from '../ui/JournalView.js?v=5';
 import { PortfolioView } from '../ui/PortfolioView.js?v=5';
 import { ProgramView } from '../ui/ProgramView.js?v=6';
+import { AgentView } from '../ui/AgentView.js';
 
 export class Router {
     constructor(containerId, app) {
@@ -15,7 +16,8 @@ export class Router {
             bilan: new BilanView(containerId, app),
             journal: new JournalView(containerId, app),
             portfolio: new PortfolioView(containerId, app),
-            program: new ProgramView(containerId, app)
+            program: new ProgramView(containerId, app),
+            agent: new AgentView(containerId, app)
         };
     }
 

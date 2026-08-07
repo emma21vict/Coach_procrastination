@@ -144,11 +144,26 @@ export class DashboardView {
                 <h3>📊 Learning Graph (Compétences)</h3>
                 ${skillsHtml || '<p>Aucune donnée de compétence pour le moment.</p>'}
             </div>
+
+            <div style="margin-top: 25px; text-align: center;">
+                <button id="btn-open-agent" style="background: linear-gradient(90deg, #ff9800, #ff5722); color: white; border: none; padding: 12px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255,152,0,0.4); width: 100%;">
+                    🤖 Créer un nouveau Bootcamp via IA
+                </button>
+            </div>
         `;
         
         const btnPlan = document.getElementById('btn-dash-plan');
         if (btnPlan) btnPlan.addEventListener('click', () => this.app.renderView('planning'));
         const btnPlanTop = document.getElementById('btn-dash-plan-top');
         if (btnPlanTop) btnPlanTop.addEventListener('click', () => this.app.renderView('planning'));
+        
+        const btnAgent = document.getElementById('btn-open-agent');
+        if (btnAgent) {
+            btnAgent.addEventListener('click', () => {
+                if (confirm("Générer un nouveau Bootcamp écrasera votre programme actuel (mais pas votre historique). Continuer ?")) {
+                    this.app.renderView('agent');
+                }
+            });
+        }
     }
 }

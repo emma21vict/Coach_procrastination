@@ -24,12 +24,7 @@ export class PortfolioView {
                 // node: { id, title, level, confidence, hours, proofs }
                 const hrs = (node.hours || 0).toFixed(1);
                 const prfCount = node.proofs ? node.proofs.length : 0;
-                let color = "#00f2fe";
-                if (node.id === "cyber") color = "#ff9800";
-                if (node.id === "ia") color = "#4CAF50";
-                if (node.id === "excel") color = "#e1bee7";
-                if (node.id === "force_n") color = "#ff5722";
-                if (node.id === "english_speaking") color = "#29b6f6";
+                let color = node.color || "#00f2fe";
 
                 domainsHtml += `
                 <div style="background: linear-gradient(135deg, #162c38 0%, #0f2027 100%); border: 1px solid ${color}; border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
@@ -70,7 +65,7 @@ export class PortfolioView {
                                     </span>
                                     <span style="color: #88a7b7; font-size: 12px; margin-left: 10px;">📅 ${p.date || 'Récemment'}</span>
                                 </div>
-                                <span style="color: #ff9800; font-size: 12px; font-weight: bold;">🎯 ${node.title}</span>
+                                <span style="color: ${node.color || '#ff9800'}; font-size: 12px; font-weight: bold;">🎯 ${node.title}</span>
                             </div>
                             
                             <div style="margin-top: 10px; font-size: 14px; color: #ffffff; line-height: 1.4; font-weight: 500;">
@@ -275,7 +270,8 @@ export class PortfolioView {
                     b.style.fontWeight = 'normal';
                     b.style.border = '1px solid #2a5268';
                 });
-                e.currentTarget.style.background = '#00f2fe';
+                let color = node.color || "#00f2fe";
+                e.currentTarget.style.background = color;
                 e.currentTarget.style.color = '#0f2027';
                 e.currentTarget.style.fontWeight = 'bold';
                 e.currentTarget.style.border = 'none';
