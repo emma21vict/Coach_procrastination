@@ -46,6 +46,8 @@ export class App {
         
         const localDate = new Date().toLocaleDateString('fr-CA');
         
+        this.currentDayIndex = await this.scheduler.getDayIndex(localDate);
+        
         const plan = await this.scheduler.generateDailyPlan(localDate);
         document.getElementById('app-root').innerHTML = '<p style="text-align:center;">Génération du planning... (Etape 2)</p>';
         
@@ -128,6 +130,22 @@ export class App {
         } catch (e) {
             alert("Erreur JS (Session): " + e.message);
         }
+    }
+
+    async shiftDay(amount) {
+        AppLogger.info(`Shift day by ${amount}`);
+        this.currentDayIndex = await this.scheduler.shiftDayIndex(amount);
+        const localDate = new Date().toLocaleDateString('fr-CA'); // Note: date string remains today, but dayIndex dictates the content
+        
+        const plan = await this.scheduler.generateDailyPlan(localDate);
+        const history = await this.storage.loadData('study_history') || [];
+        const completedIds = history.filter(r => r.date === localDate).map(r => r.sessionId);
+        
+        plan.habits.forEach(h => h.completed = completedIds.includes(h.id));
+        plan.sessions.forEach(s => s.completed = completedIds.includes(s.id));
+        
+        this.state.dailyPlan = plan;
+        this.renderView('planning');
     }
     
     async markHabitCompleted(habitId) {

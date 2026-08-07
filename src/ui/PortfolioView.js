@@ -166,9 +166,18 @@ export class PortfolioView {
                     <h2 style="margin:0; color:#ffffff; font-size: 24px;">🏆 Mon Portfolio Officiel & Historique</h2>
                     <p style="margin:4px 0 0 0; color:#88a7b7; font-size:14px;">Vitrine complète de vos compétences, captures d'écran, vocaux et accomplissements</p>
                 </div>
-                <button type="button" onclick="window.print()" style="background:linear-gradient(90deg, #00f2fe, #4facfe); color:#0f2027; font-weight:bold; border:none; padding:10px 18px; border-radius:20px; cursor:pointer; font-size:13px; box-shadow: 0 2px 8px rgba(0,242,254,0.3);">
-                    🖨️ Exporter en PDF / Imprimer
-                </button>
+                <div style="display:flex; gap:10px;">
+                    <button type="button" id="btn-export-data" style="background:transparent; color:#ffb74d; font-weight:bold; border:1px solid #ffb74d; padding:10px 15px; border-radius:20px; cursor:pointer; font-size:13px;">
+                        💾 Exporter Backup
+                    </button>
+                    <label for="input-import-data" style="background:transparent; color:#ffb74d; font-weight:bold; border:1px solid #ffb74d; padding:10px 15px; border-radius:20px; cursor:pointer; font-size:13px; display:inline-block;">
+                        📂 Importer Backup
+                    </label>
+                    <input type="file" id="input-import-data" accept=".json" style="display:none;">
+                    <button type="button" onclick="window.print()" style="background:linear-gradient(90deg, #00f2fe, #4facfe); color:#0f2027; font-weight:bold; border:none; padding:10px 18px; border-radius:20px; cursor:pointer; font-size:13px; box-shadow: 0 2px 8px rgba(0,242,254,0.3);">
+                        🖨️ Exporter en PDF / Imprimer
+                    </button>
+                </div>
             </div>
 
             <!-- CARTE HÉROS VITRINE DES BADGES -->
@@ -282,7 +291,57 @@ export class PortfolioView {
                     secProofs.style.display = 'none';
                     secJournals.style.display = 'block';
                 }
-            });
         });
+
+        // Event listeners for Export / Import
+        const btnExport = document.getElementById('btn-export-data');
+        if (btnExport) {
+            btnExport.addEventListener('click', async () => {
+                try {
+                    const dbKeys = ['study_history', 'user_profile', 'daily_journals', 'bootcamp_program_version'];
+                    const exportData = {};
+                    for (const key of dbKeys) {
+                        exportData[key] = await this.app.storage.loadData(key);
+                    }
+                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData));
+                    const downloadAnchorNode = document.createElement('a');
+                    downloadAnchorNode.setAttribute("href", dataStr);
+                    downloadAnchorNode.setAttribute("download", "backup_procrastination.json");
+                    document.body.appendChild(downloadAnchorNode); // required for firefox
+                    downloadAnchorNode.click();
+                    downloadAnchorNode.remove();
+                    alert("Sauvegarde téléchargée avec succès !");
+                } catch(e) {
+                    alert("Erreur lors de l'export: " + e.message);
+                }
+            });
+        }
+
+        const inputImport = document.getElementById('input-import-data');
+        if (inputImport) {
+            inputImport.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                if (confirm("⚠️ Attention : l'importation va écraser TOUTES vos données actuelles. Voulez-vous continuer ?")) {
+                    const reader = new FileReader();
+                    reader.onload = async (event) => {
+                        try {
+                            const importedData = JSON.parse(event.target.result);
+                            for (const key in importedData) {
+                                await this.app.storage.saveData(key, importedData[key]);
+                            }
+                            alert("Données importées avec succès ! L'application va redémarrer.");
+                            window.location.reload(true);
+                        } catch(err) {
+                            alert("Fichier de sauvegarde invalide ou corrompu.");
+                        }
+                    };
+                    reader.readAsText(file);
+                } else {
+                    inputImport.value = ""; // Reset input
+                }
+            });
+        }
     }
 }

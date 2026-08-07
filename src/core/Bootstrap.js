@@ -1,4 +1,4 @@
-import { LocalStorageProvider } from '../services/LocalStorageProvider.js';
+import { IndexedDBProvider } from '../services/IndexedDBProvider.js';
 import { SchedulerEngine } from '../engines/SchedulerEngine.js?v=11';
 import { XPEngine } from '../engines/XPEngine.js';
 import { StudyRecordEngine } from '../engines/StudyRecordEngine.js';
@@ -14,10 +14,29 @@ export class Bootstrap {
         let storage, scheduler, xpEngine, studyRecordEngine, analyticsEngine, coachEngine;
         
         try {
-            storage = new LocalStorageProvider();
+            storage = new IndexedDBProvider();
+            await storage.initPromise;
+            
+            // Migration script
+            const ls = window.localStorage;
+            if (ls.getItem('study_history') && !ls.getItem('migration_done')) {
+                AppLogger.info("Starting migration from LocalStorage to IndexedDB...");
+                for (let i = 0; i < ls.length; i++) {
+                    const key = ls.key(i);
+                    if (key !== 'migration_done') {
+                        try {
+                            const data = JSON.parse(ls.getItem(key));
+                            await storage.saveData(key, data);
+                        } catch(e) {}
+                    }
+                }
+                ls.setItem('migration_done', 'true');
+                AppLogger.info("Migration to IndexedDB complete!");
+            }
+            
             const savedVersion = await storage.loadData('bootcamp_program_version');
             if (savedVersion !== "2.8_eloquence_no_ted") {
-                await storage.removeData('bootcamp_program');
+                await storage.clearData('bootcamp_program');
                 await storage.saveData('bootcamp_program_version', "2.8_eloquence_no_ted");
                 AppLogger.info("Cache du programme purgé (v2.8 : TED complètement remplacé par Storytelling en français) !");
             }

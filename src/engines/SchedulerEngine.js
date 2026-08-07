@@ -28,8 +28,32 @@ export class SchedulerEngine {
         AppLogger.info("Scheduler: Programme sauvegardé.");
     }
 
+    async getDayIndex(dateStr) {
+        let dayIndex = await this.storage.loadData('current_day_index');
+        
+        if (dayIndex === null || dayIndex === undefined) {
+            const startDate = new Date('2026-08-04T12:00:00');
+            const currentObj = new Date(dateStr + 'T12:00:00');
+            dayIndex = 0;
+            if (currentObj >= startDate) {
+                const diffTime = currentObj - startDate;
+                dayIndex = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            }
+            dayIndex = Math.min(Math.max(0, dayIndex), 27);
+            await this.storage.saveData('current_day_index', dayIndex);
+        }
+        return dayIndex;
+    }
+
+    async shiftDayIndex(amount) {
+        let dayIndex = await this.storage.loadData('current_day_index') || 0;
+        dayIndex = Math.min(Math.max(0, dayIndex + amount), 27);
+        await this.storage.saveData('current_day_index', dayIndex);
+        return dayIndex;
+    }
+
     async generateDailyPlan(dateStr) {
-        AppLogger.info(`Scheduler: Génération du planning pour la date ${dateStr}`);
+        AppLogger.info(`Scheduler: Génération du plan pour la date ${dateStr}`);
         
         const mockHabits = [
             new Habit("hab_3", "Journal (Bilan & Objectifs)", "reflection", "Critique", 5, "Soir", 7)
@@ -59,15 +83,7 @@ export class SchedulerEngine {
         let todaySessions = [];
         let activeHabits = mockHabits;
         
-        const startDate = new Date('2026-08-04T12:00:00');
-        const currentObj = new Date(dateStr + 'T12:00:00');
-        
-        let dayIndex = 0;
-        if (currentObj >= startDate) {
-            const diffTime = currentObj - startDate;
-            dayIndex = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        }
-        dayIndex = Math.min(Math.max(0, dayIndex), 27);
+        let dayIndex = await this.getDayIndex(dateStr);
         const weekIndex = Math.floor(dayIndex / 7);
         const dayOfWeek = dayIndex % 7;
         if (program[weekIndex] && program[weekIndex].days[dayOfWeek]) {

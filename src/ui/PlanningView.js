@@ -6,11 +6,24 @@ export class PlanningView {
     
     render(plan) {
         let dateHtml = "du Jour";
+        let dayInfo = "";
         if (plan && plan.date) {
             const dateObj = new Date(plan.date + 'T12:00:00');
             dateHtml = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+            
+            // Si on a l'index depuis App
+            if (this.app && typeof this.app.currentDayIndex === 'number') {
+                dayInfo = ` (Jour ${this.app.currentDayIndex + 1})`;
+            }
         }
-        let html = `<h2 style="text-transform: capitalize;">📅 Planning <span style="color:#00f2fe;">${dateHtml}</span></h2>`;
+        
+        let html = `
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 15px;">
+            <button id="btn-prev-day" style="background:#152b36; color:#00f2fe; border:1px solid #00f2fe; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:bold;">⬅️ Précédent</button>
+            <h2 style="text-transform: capitalize; margin: 0; text-align: center; flex: 1;">📅 Planning <span style="color:#00f2fe;">${dateHtml}</span>${dayInfo}</h2>
+            <button id="btn-next-day" style="background:#152b36; color:#00f2fe; border:1px solid #00f2fe; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:bold;">Suivant ➡️</button>
+        </div>
+        `;
         
         html += '<h3 style="color: #00f2fe; border-bottom: 1px solid #00f2fe; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">';
         html += '<span>🎯 Sessions du Bootcamp</span>';
@@ -93,6 +106,20 @@ export class PlanningView {
             });
         }
         
+        const btnPrevDay = document.getElementById('btn-prev-day');
+        if (btnPrevDay) {
+            btnPrevDay.addEventListener('click', () => {
+                if (this.app.shiftDay) this.app.shiftDay(-1);
+            });
+        }
+
+        const btnNextDay = document.getElementById('btn-next-day');
+        if (btnNextDay) {
+            btnNextDay.addEventListener('click', () => {
+                if (this.app.shiftDay) this.app.shiftDay(1);
+            });
+        }
+
         const btnBilan = document.getElementById('btn-show-bilan');
         if (btnBilan) {
             btnBilan.addEventListener('click', () => {
