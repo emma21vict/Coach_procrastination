@@ -113,7 +113,7 @@ export class App {
         this.router.render(viewName, this.state);
     }
     
-    async markSessionCompleted(sessionId, metrics = { status: 'completed' }) {
+    async markSessionCompleted(sessionId, metrics = { status: 'completed' }, redirectView = null) {
         try {
             const session = this.state.dailyPlan.sessions.find(s => s.id === sessionId);
             if (session) {
@@ -126,7 +126,7 @@ export class App {
                     await this.studyRecordEngine.uncompleteSession(sessionId, localDate);
                 }
                 await this.refreshUserStats();
-                this.renderView(this.state.currentView);
+                this.renderView(redirectView || this.state.currentView);
             }
         } catch (e) {
             alert("Erreur JS (Session): " + e.message);

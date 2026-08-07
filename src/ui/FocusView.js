@@ -343,7 +343,7 @@ export class FocusView {
                 this.currentSessionId = null;
                 this.focusEndTime = null;
 
-                this.app.markSessionCompleted(id, metrics);
+                this.app.markSessionCompleted(id, metrics, 'journal');
             });
         }
     }
