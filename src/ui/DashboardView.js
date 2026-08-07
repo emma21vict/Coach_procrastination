@@ -123,10 +123,7 @@ export class DashboardView {
             
 
 
-            <div class="stats" style="border-left: 5px solid #00f2fe; margin-top: 15px;">
-                <h3>📊 Learning Graph (Compétences)</h3>
-                ${skillsHtml || '<p>Aucune donnée de compétence pour le moment.</p>'}
-            </div>
+
 
             <div style="margin-top: 25px; text-align: center;">
                 <button id="btn-open-agent" style="background: linear-gradient(90deg, #ff9800, #ff5722); color: white; border: none; padding: 12px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255,152,0,0.4); width: 100%;">
