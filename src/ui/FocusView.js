@@ -339,11 +339,42 @@ export class FocusView {
                     energy: parseInt(document.getElementById('f-energy').value)
                 };
                 
-                // Clear state when session is completed
                 this.currentSessionId = null;
                 this.focusEndTime = null;
 
-                this.app.markSessionCompleted(id, metrics, 'journal');
+                // Logique intelligente de redirection
+                let nextView = 'journal';
+                
+                const sessions = this.app.state.dailyPlan && this.app.state.dailyPlan.sessions ? this.app.state.dailyPlan.sessions : [];
+                const habits = this.app.state.dailyPlan && this.app.state.dailyPlan.habits ? this.app.state.dailyPlan.habits : [];
+                
+                const incompleteSessions = sessions.filter(s => !s.completed && s.id !== id);
+                const incompleteHabits = habits.filter(h => !h.completed && h.id !== id);
+                
+                if (incompleteSessions.length === 0 && incompleteHabits.length === 0) {
+                    // Toutes les tâches de la journée sont terminées !
+                    nextView = 'coach';
+                } else if (incompleteSessions.length > 0) {
+                    // Vérifier s'il est l'heure de la tâche suivante
+                    const nextSess = incompleteSessions[0];
+                    if (nextSess.startTime) {
+                        const timeParts = nextSess.startTime.split(/[:h]/);
+                        if (timeParts.length === 2) {
+                            const sh = parseInt(timeParts[0], 10);
+                            const sm = parseInt(timeParts[1], 10);
+                            const now = new Date();
+                            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+                            const sessionMinutes = sh * 60 + sm;
+                            
+                            // Si on est déjà à l'heure de la tâche suivante (marge de 10 min)
+                            if (currentMinutes >= sessionMinutes - 10) {
+                                nextView = 'planning';
+                            }
+                        }
+                    }
+                }
+
+                this.app.markSessionCompleted(id, metrics, nextView);
             });
         }
     }
