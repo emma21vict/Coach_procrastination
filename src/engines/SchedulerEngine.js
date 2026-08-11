@@ -29,27 +29,50 @@ export class SchedulerEngine {
     }
 
     async getDayIndex(dateStr) {
-        let dayIndex = await this.storage.loadData('current_day_index');
+        let offset = await this.storage.loadData('bootcamp_offset');
+        let startDateStr = await this.storage.loadData('bootcamp_start_date');
         
-        if (dayIndex === null || dayIndex === undefined) {
-            const startDate = new Date('2026-08-04T12:00:00');
-            const currentObj = new Date(dateStr + 'T12:00:00');
-            dayIndex = 0;
-            if (currentObj >= startDate) {
-                const diffTime = currentObj - startDate;
-                dayIndex = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            }
-            dayIndex = Math.min(Math.max(0, dayIndex), 27);
-            await this.storage.saveData('current_day_index', dayIndex);
+        if (!startDateStr) {
+            startDateStr = '2026-08-04T12:00:00';
+            await this.storage.saveData('bootcamp_start_date', startDateStr);
         }
+
+        const startDate = new Date(startDateStr);
+        const currentObj = new Date(dateStr + 'T12:00:00');
+        const diffTime = currentObj - startDate;
+        let naturalDayIndex = Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
+
+        if (offset === null || offset === undefined) {
+            let legacyDayIndex = await this.storage.loadData('current_day_index');
+            if (legacyDayIndex !== null && legacyDayIndex !== undefined) {
+                offset = legacyDayIndex - naturalDayIndex;
+            } else {
+                offset = 0;
+            }
+            await this.storage.saveData('bootcamp_offset', offset);
+        }
+
+        let programLength = 27; // Par défaut 4 semaines (28 jours)
+        const program = await this.getFullProgram();
+        if (program && program.length > 0) {
+            programLength = (program.length * 7) - 1;
+        }
+
+        let dayIndex = naturalDayIndex + offset;
+        dayIndex = Math.min(Math.max(0, dayIndex), programLength);
+        
+        // Save current_day_index for any legacy components that might still read it directly
+        await this.storage.saveData('current_day_index', dayIndex);
         return dayIndex;
     }
 
     async shiftDayIndex(amount) {
-        let dayIndex = await this.storage.loadData('current_day_index') || 0;
-        dayIndex = Math.min(Math.max(0, dayIndex + amount), 27);
-        await this.storage.saveData('current_day_index', dayIndex);
-        return dayIndex;
+        let offset = await this.storage.loadData('bootcamp_offset') || 0;
+        offset += amount;
+        await this.storage.saveData('bootcamp_offset', offset);
+        
+        const localDate = new Date().toLocaleDateString('fr-CA');
+        return await this.getDayIndex(localDate);
     }
 
     async generateDailyPlan(dateStr) {

@@ -86,7 +86,12 @@ Règles impératives :
                 description: bootcampData.description
             });
             await this.storage.saveData('bootcamp_program_version', 'AI_GENERATED');
-            await this.storage.saveData('current_day_index', 0); // Reset progress
+            
+            // Réinitialiser le suivi des jours pour le nouveau programme
+            const todayStr = new Date().toLocaleDateString('fr-CA') + 'T12:00:00';
+            await this.storage.saveData('bootcamp_start_date', todayStr);
+            await this.storage.saveData('bootcamp_offset', 0);
+            await this.storage.saveData('current_day_index', 0);
 
             AppLogger.info("AI Generator: Bootcamp généré et sauvegardé avec succès.");
             return true;
