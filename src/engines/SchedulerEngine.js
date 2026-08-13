@@ -9,16 +9,17 @@ export class SchedulerEngine {
     
     async getFullProgram() {
         let program = await this.storage.loadData('bootcamp_program');
-        const currentVersion = "2.8_eloquence_no_ted";
+        const currentVersion = "2.9_free_certs_only";
         const savedVersion = await this.storage.loadData('bootcamp_program_version');
         
-        // MIGRATION / UPGRADE : Si la version en cache n'est pas la version 2.8 ou s'il manque les blocs sur les séances, on remplace par le nouveau programme officiel !
-        const hasBlocks = program && Array.isArray(program) && program.length === 4 && program[0] && program[0].days && program[0].days[0] && program[0].days[0].sessions && program[0].days[0].sessions[0] && program[0].days[0].sessions[0].block;
-        if (!program || !hasBlocks || savedVersion !== currentVersion) {
+        // MIGRATION / UPGRADE : Si la version en cache n'est pas la bonne et que ce n'est PAS un bootcamp généré par l'IA
+        const hasBlocks = program && Array.isArray(program) && program.length > 0 && program[0] && program[0].days && program[0].days[0] && program[0].days[0].sessions;
+        
+        if (!program || !hasBlocks || (savedVersion !== currentVersion && savedVersion !== "AI_GENERATED")) {
             program = this.generateDefaultProgram();
             await this.storage.saveData('bootcamp_program', program);
             await this.storage.saveData('bootcamp_program_version', currentVersion);
-            AppLogger.info("Scheduler: Programme officiel complet 4 semaines v2.8 (sans TED, 100% éloquence FR) chargé dans le cache !");
+            AppLogger.info(`Scheduler: Programme par défaut mis à jour vers ${currentVersion}`);
         }
         return program;
     }
