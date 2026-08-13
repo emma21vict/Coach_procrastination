@@ -11,14 +11,20 @@ export class StudyRecordEngine {
     async completeSession(session, metrics = {}) {
         AppLogger.info(`StudyRecordEngine: Enregistrement complet de la session ${session.title}`);
         
+        let user = await this.storage.loadData('user_profile') || { xpTotal: 0, streak: 1, lastActive: null };
+        const today = new Date().toLocaleDateString('fr-CA');
+        
         const quality = metrics.quality || 3;
         const difficulty = session.priority === 'Haute' ? 1.5 : (session.priority === 'Critique' ? 2.0 : 1.2);
-        const xpEarned = this.xpEngine.constructor.calculateXP(10, difficulty, 1.0, quality, 1);
+        
+        // Use actual XP from session or fallback to duration
+        const baseXP = session.xp || session.expectedDuration || 15;
+        const xpEarned = this.xpEngine.constructor.calculateXP(baseXP, difficulty, 1.0, quality, user.streak || 1);
         
         const record = new StudyRecord(
             `rec_${Date.now()}`,
             session.id,
-            new Date().toLocaleDateString('fr-CA'),
+            today,
             new Date().toISOString(),
             session.skillIds || session.skillId
         );
@@ -46,12 +52,14 @@ export class StudyRecordEngine {
         history.push(record);
         await this.storage.saveData('study_history', history);
         
-        let user = await this.storage.loadData('user_profile') || { xpTotal: 0, streak: 1, lastActive: null };
         user.xpTotal += xpEarned;
         
-        const today = new Date().toLocaleDateString('fr-CA');
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toLocaleDateString('fr-CA');
+        
         if (user.lastActive !== today) {
-            user.streak = (user.lastActive === getYesterdayDateString()) ? user.streak + 1 : 1;
+            user.streak = (user.lastActive === yesterdayStr) ? user.streak + 1 : 1;
             user.lastActive = today;
         }
         await this.storage.saveData('user_profile', user);
