@@ -30,7 +30,7 @@ Tu dois répondre UNIQUEMENT par un objet JSON valide (sans formatage Markdown, 
         {
           "day": 1,
           "sessions": [
-            { "title": "Titre de la session", "expectedDuration": 60, "skillId": "code_unique", "priority": "Haute" }
+            { "title": "Titre de la session", "expectedDuration": 60, "skillId": "code_unique", "priority": "Haute", "resourceLink": "https://url-certification-gratuite.com" }
           ]
         }
       ]
@@ -42,9 +42,10 @@ Règles impératives :
 1. Crée entre 3 et 6 "skills" pertinents pour l'objectif avec des couleurs (hex) harmonieuses. Toujours inclure une matière 'reflection' (Bilan).
 2. Crée 2 ou 3 "habits" (habitudes quotidiennes) de 10 à 20 minutes maximum (utilise un skillId valide).
 3. Tu dois impérativement générer le programme pour TOUS LES JOURS de TOUTES LES SEMAINES. (Donc ${weeks} semaines avec 7 jours par semaine = ${weeks * 7} jours).
-4. Chaque jour (day) doit comporter un nombre de sessions dont la somme des "expectedDuration" (en minutes) s'approche de ${hoursPerDay * 60} minutes. Ne dépasse pas de beaucoup.
-5. Inclus des jours de repos ou de révision légère (par ex le jour 7).
-6. Le JSON doit être prêt à être parsé par JSON.parse(). AUCUNE balise markdown \`\`\`json. Seulement l'objet { ... }
+4. OBLIGATION ABSOLUE : Chaque session DOIT contenir la clé "resourceLink". Ce lien DOIT être une URL valide pointant vers une formation GRATUITE qui délivre une CERTIFICATION pour le CV/Portfolio (ex: FreeCodeCamp, Kaggle, TryHackMe, Cisco SkillsForAll, etc.). AUCUN LIEN PAYANT. NE LAISSE AUCUN LIEN VIDE.
+5. Chaque jour (day) doit comporter un nombre de sessions dont la somme des "expectedDuration" (en minutes) s'approche de ${hoursPerDay * 60} minutes. Ne dépasse pas de beaucoup.
+6. Inclus des jours de repos ou de révision légère (par ex le jour 7).
+7. Le JSON doit être prêt à être parsé par JSON.parse(). AUCUNE balise markdown \`\`\`json. Seulement l'objet { ... }
 `;
 
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
