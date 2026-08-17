@@ -9,7 +9,7 @@ export class SchedulerEngine {
     
     async getFullProgram() {
         let program = await this.storage.loadData('bootcamp_program');
-        const currentVersion = "2.9_free_certs_only";
+        const currentVersion = "2.9.1_exact_links";
         const savedVersion = await this.storage.loadData('bootcamp_program_version');
         
         // MIGRATION / UPGRADE : Si la version en cache n'est pas la bonne et que ce n'est PAS un bootcamp généré par l'IA
