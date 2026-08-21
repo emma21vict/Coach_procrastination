@@ -164,7 +164,7 @@ export class SchedulerEngine {
         });
 
         AppLogger.info(`Scheduler: ${activeHabits.length} habitudes et ${sessionsForToday.length} sessions générées.`);
-        return { date: dateStr, habits: activeHabits, sessions: sessionsForToday };
+        return { date: dateStr, weekIndex: weekIndex, habits: activeHabits, sessions: sessionsForToday };
     }
 
     generateDefaultProgram() {

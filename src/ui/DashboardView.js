@@ -53,7 +53,8 @@ export class DashboardView {
         let objective = "";
         
         if (state.fullProgram && state.fullProgram.length > 0) {
-            const currentWeek = state.fullProgram[0];
+            const currentWeekIndex = (state.dailyPlan && state.dailyPlan.weekIndex !== undefined) ? state.dailyPlan.weekIndex : 0;
+            const currentWeek = state.fullProgram[currentWeekIndex] || state.fullProgram[state.fullProgram.length - 1];
             if (currentWeek) {
                 theme = currentWeek.theme || theme;
                 objective = currentWeek.objective || "";
