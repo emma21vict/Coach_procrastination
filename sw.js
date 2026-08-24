@@ -1,4 +1,4 @@
-const CACHE_NAME = 'coach-procrastination-v4';
+const CACHE_NAME = 'coach-procrastination-v5';
 const ASSETS = [
     './',
     './index.html',

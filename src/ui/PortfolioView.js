@@ -270,8 +270,8 @@ export class PortfolioView {
                     b.style.fontWeight = 'normal';
                     b.style.border = '1px solid #2a5268';
                 });
-                let color = node.color || "#00f2fe";
-                e.currentTarget.style.background = color;
+                
+                e.currentTarget.style.background = "#00f2fe";
                 e.currentTarget.style.color = '#0f2027';
                 e.currentTarget.style.fontWeight = 'bold';
                 e.currentTarget.style.border = 'none';
