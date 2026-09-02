@@ -1,6 +1,6 @@
 import { AppLogger } from '../utils/AppLogger.js';
 import { Habit } from '../models/Habit.js';
-import { DefaultBootcampProgram } from '../data/BootcampProgram.js?v=11';
+import { DefaultBootcampProgram } from '../data/BootcampProgram.js?v=10';
 
 export class SchedulerEngine {
     constructor(storageProvider) {
@@ -9,7 +9,7 @@ export class SchedulerEngine {
     
     async getFullProgram() {
         let program = await this.storage.loadData('bootcamp_program');
-        const currentVersion = "2.9.3_altissia_links";
+        const currentVersion = "2.9.2_exact_links";
         const savedVersion = await this.storage.loadData('bootcamp_program_version');
         
         // MIGRATION / UPGRADE : Si la version en cache n'est pas la bonne et que ce n'est PAS un bootcamp généré par l'IA

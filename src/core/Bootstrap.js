@@ -1,5 +1,5 @@
 import { IndexedDBProvider } from '../services/IndexedDBProvider.js';
-import { SchedulerEngine } from '../engines/SchedulerEngine.js?v=12';
+import { SchedulerEngine } from '../engines/SchedulerEngine.js?v=11';
 import { XPEngine } from '../engines/XPEngine.js';
 import { StudyRecordEngine } from '../engines/StudyRecordEngine.js';
 import { AnalyticsEngine } from '../engines/AnalyticsEngine.js';
